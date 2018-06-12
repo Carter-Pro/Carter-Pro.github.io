@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="数学知识," />
 
 
 
@@ -79,17 +79,18 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="description" content="今天碰到一个涉及到负数取模的问题不知道怎么算了。在研究的过程中发现自己以往一直把取模(modulus)和取余(remainder)当做一个概念用，但是这两个概念是不是一样的呢？ 参考  负数取模怎么算 实数范围内的求模（求余）运算：负数求余究竟怎么求 What’s the difference between “mod” and “remainder”?  数学上取模与取余取模和取余的步骤对于整数">
+<meta name="keywords" content="数学知识">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2018/06/12/hello-world/index.html">
+<meta property="og:title" content="整数的取模和取余">
+<meta property="og:url" content="http://yoursite.com/2016/02/27/ModAndRem/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="今天碰到一个涉及到负数取模的问题不知道怎么算了。在研究的过程中发现自己以往一直把取模(modulus)和取余(remainder)当做一个概念用，但是这两个概念是不是一样的呢？ 参考  负数取模怎么算 实数范围内的求模（求余）运算：负数求余究竟怎么求 What’s the difference between “mod” and “remainder”?  数学上取模与取余取模和取余的步骤对于整数">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-12T15:03:25.000Z">
+<meta property="og:updated_time" content="2016-04-24T14:24:41.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="整数的取模和取余">
+<meta name="twitter:description" content="今天碰到一个涉及到负数取模的问题不知道怎么算了。在研究的过程中发现自己以往一直把取模(modulus)和取余(remainder)当做一个概念用，但是这两个概念是不是一样的呢？ 参考  负数取模怎么算 实数范围内的求模（求余）运算：负数求余究竟怎么求 What’s the difference between “mod” and “remainder”?  数学上取模与取余取模和取余的步骤对于整数">
 
 
 
@@ -119,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/06/12/hello-world/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/02/27/ModAndRem/"/>
 
 
 
 
 
-  <title>Hello World | GuLei's Lab</title>
+  <title>整数的取模和取余 | GuLei's Lab</title>
   
 
 
@@ -232,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/12/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/27/ModAndRem/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Lei">
@@ -249,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World</h1>
+          <h1 class="post-title" itemprop="name headline">整数的取模和取余</h1>
         
 
         <div class="post-meta">
@@ -261,8 +262,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-12T23:03:25+08:00">
-                2018-06-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-27T19:40:30+08:00">
+                2016-02-27
               </time>
             
 
@@ -271,6 +272,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/思考/" itemprop="url" rel="index">
+                    <span itemprop="name">思考</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -299,15 +322,59 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <p>今天碰到一个涉及到<strong>负数取模</strong>的问题不知道怎么算了。在研究的过程中发现自己以往一直把取模(modulus)和取余(remainder)当做一个概念用，但是这两个概念是不是一样的呢？</p>
+<p>参考</p>
+<ol>
+<li><a href="http://www.jianshu.com/p/452c1a5acd31" target="_blank" rel="noopener">负数取模怎么算</a></li>
+<li><a href="http://ceeji.net/blog/mod-in-real/" target="_blank" rel="noopener">实数范围内的求模（求余）运算：负数求余究竟怎么求</a></li>
+<li><a href="http://stackoverflow.com/questions/13683563/whats-the-difference-between-mod-and-remainder" target="_blank" rel="noopener">What’s the difference between “mod” and “remainder”?</a></li>
+</ol>
+<h1 id="数学上取模与取余"><a href="#数学上取模与取余" class="headerlink" title="数学上取模与取余"></a>数学上取模与取余</h1><h2 id="取模和取余的步骤"><a href="#取模和取余的步骤" class="headerlink" title="取模和取余的步骤"></a>取模和取余的步骤</h2><p>对于整数<code>a</code>和<code>b</code>来说，取模运算和取余运算步骤是一样的。</p>
+<ol>
+<li><p>求整数商<code>c</code></p>
+<p>$$<br>c = a / b<br>$$</p>
+<p>​</p>
+</li>
+<li><p>计算模/余数<code>r</code></p>
+<p>$$<br>r = a - c * b<br>$$</p>
+</li>
+</ol>
+<h2 id="取模和取余区别"><a href="#取模和取余区别" class="headerlink" title="取模和取余区别"></a>取模和取余区别</h2><p>取模和取余的区别在于第一步计算整数商<code>c</code>时取整的方法不一样。</p>
+<h3 id="整数除法取整的3种方法"><a href="#整数除法取整的3种方法" class="headerlink" title="整数除法取整的3种方法"></a>整数除法取整的3种方法</h3><ol>
+<li><strong>向上取整</strong>，向+∞方向取最接近精确值的整数，也就是取比实际结果稍大的最小整数，也叫 Ceiling 取整。这种取整方式下，17 / 10 == 2，5 / 2 == 3, -9 / 4 == -2。</li>
+<li><strong>向下取整</strong>，向-∞方向取最接近精确值的整数，也就是取比实际结果稍小的最大整数，也叫 Floor 取整。这种取整方式下，17 / 10 == 1，5 / 2 == 2, -9 / 4 == -3。</li>
+<li><strong>向零取整</strong>，向0方向取最接近精确值的整数，换言之就是舍去小数部分，因此又称截断取整（Truncate）。这种取整方式下，17 / 10 == 1，5 / 2 == 2, -9 / 4 == -2。</li>
+</ol>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>其中，<strong>取余</strong>使用了<strong>向零取整</strong>，<strong>取模</strong>使用了<strong>向下取整</strong>。</p>
+<p>因此，在被除数与除数<strong>符号一致</strong>的情况下，取模与取余结果是相同的。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例如：计算-7 Mod 4</p>
+<p>那么：<code>a</code> = -7；<code>b</code>= 4；</p>
+<ol>
+<li>求整数商<code>c</code>。如进行求模运算<code>c</code> = -2（向负无穷方向舍入），求余<code>c</code> = -1（向0方向舍入）；</li>
+<li>计算模和余数的公式相同，但因c的值不同，求模时<code>r</code> = 1，求余时<code>r</code> = -3。</li>
+</ol>
+<h1 id="计算机的取模和取余"><a href="#计算机的取模和取余" class="headerlink" title="计算机的取模和取余"></a>计算机的取模和取余</h1><p>在流行编程语言中（除了matlab），<code>%</code>就是取余（至少在C、C++、Java和C#是这样的），教科书将这两个概念同化了。</p>
+<p>看一下C和Python计算上述例子。</p>
+<table>
+<thead>
+<tr>
+<th>语言</th>
+<th>计算结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C</td>
+<td>-3</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>因为C语言在整除时使用了向零取整，Python使用了向下取整。</p>
+<p>与C语言习惯相同的还有C++与Java。</p>
 
       
     </div>
@@ -323,6 +390,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/数学知识/" rel="tag"># 数学知识</a>
+          
+        </div>
+      
 
       
       
@@ -332,8 +405,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/05/OrgPomodoroNotifier/" rel="next" title="给 org-pomodoro 增加桌面通知功能">
-                <i class="fa fa-chevron-left"></i> 给 org-pomodoro 增加桌面通知功能
+              <a href="/2016/02/24/OpenInSafari/" rel="next" title="在Safari中打开Chrome的当前页">
+                <i class="fa fa-chevron-left"></i> 在Safari中打开Chrome的当前页
               </a>
             
           </div>
@@ -341,6 +414,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/25/Learn-elisp-in-15-minutes/" rel="prev" title="Learn elisp in 15 minutes">
+                Learn elisp in 15 minutes <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -472,7 +549,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数学上取模与取余"><span class="nav-number">1.</span> <span class="nav-text">数学上取模与取余</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#取模和取余的步骤"><span class="nav-number">1.1.</span> <span class="nav-text">取模和取余的步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取模和取余区别"><span class="nav-number">1.2.</span> <span class="nav-text">取模和取余区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整数除法取整的3种方法"><span class="nav-number">1.2.1.</span> <span class="nav-text">整数除法取整的3种方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区别"><span class="nav-number">1.2.2.</span> <span class="nav-text">区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">1.3.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#计算机的取模和取余"><span class="nav-number">2.</span> <span class="nav-text">计算机的取模和取余</span></a></li></ol></div>
             
 
           </div>
