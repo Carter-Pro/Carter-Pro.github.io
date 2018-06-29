@@ -87,13 +87,13 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="通过脚本使用快捷键在Safari中打开Chrome的当前网页">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2016/02/24/OpenInSafari/OpenInSafari/1.png">
-<meta property="og:image" content="http://yoursite.com/2016/02/24/OpenInSafari/OpenInSafari/2.png">
-<meta property="og:updated_time" content="2016-04-24T14:24:41.000Z">
+<meta property="og:image" content="http://yoursite.com/2016/02/24/OpenInSafari/1.png">
+<meta property="og:image" content="http://yoursite.com/2016/02/24/OpenInSafari/2.png">
+<meta property="og:updated_time" content="2018-06-29T15:52:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在Safari中打开Chrome的当前页">
 <meta name="twitter:description" content="通过脚本使用快捷键在Safari中打开Chrome的当前网页">
-<meta name="twitter:image" content="http://yoursite.com/2016/02/24/OpenInSafari/OpenInSafari/1.png">
+<meta name="twitter:image" content="http://yoursite.com/2016/02/24/OpenInSafari/1.png">
 
 
 
@@ -334,7 +334,7 @@
 <p>为了一键解决这个问题，我来是想写一个Chrome插件的，后来发现<code>AppleScript</code>这个功能非常强大，可以很轻松解决该问题。可以说<code>AppleScript</code>为我打开了一扇使用Mac的新大门。</p>
 <p>本博文参考<a href="https://www.quora.com/Is-there-an-open-in-Safari-plugin-for-Chrome" target="_blank" rel="noopener">这里</a></p>
 <h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="写脚本"><a href="#写脚本" class="headerlink" title="写脚本"></a>写脚本</h2><p>如图所示</p>
-<p> <img src="OpenInSafari/1.png" alt="1"></p>
+<p> <img src="/2016/02/24/OpenInSafari/1.png" alt="1"></p>
 <ol>
 <li>使用<code>Spotlight</code>打开<code>Automator</code></li>
 <li>创建新<code>服务</code></li>
@@ -345,7 +345,7 @@
 <p>脚本如下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">property theURL : &quot;&quot;</span><br><span class="line">tell application &quot;Google Chrome&quot;</span><br><span class="line">  set theURL to URL of active tab of window 0</span><br><span class="line">end tell</span><br><span class="line"></span><br><span class="line">if appIsRunning(&quot;Safari&quot;) then</span><br><span class="line">  tell application &quot;Safari&quot;</span><br><span class="line">		tell front window</span><br><span class="line">			open location theURL</span><br><span class="line">		end tell</span><br><span class="line">		activate</span><br><span class="line">	end tell</span><br><span class="line">else</span><br><span class="line">	tell application &quot;Safari&quot;</span><br><span class="line">		-- Safari not running, so start it</span><br><span class="line">		do shell script &quot;open -a \&quot;Safari\&quot;&quot;</span><br><span class="line">		tell front window</span><br><span class="line">			open location theURL</span><br><span class="line">		end tell</span><br><span class="line">		activate</span><br><span class="line">	end tell</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line">on appIsRunning(appName)</span><br><span class="line">	tell application &quot;System Events&quot; to (name of processes) contains appName</span><br><span class="line">end appIsRunning</span><br></pre></td></tr></table></figure>
 <h2 id="设置快捷键"><a href="#设置快捷键" class="headerlink" title="设置快捷键"></a>设置快捷键</h2><p>如图所示</p>
-<p> <img src="OpenInSafari/2.png" alt="2"></p>
+<p> <img src="/2016/02/24/OpenInSafari/2.png" alt="2"></p>
 <p>打开<code>系统偏好设置</code>-<code>键盘</code>-<code>快捷键</code>，单击左侧<code>服务</code>，在右侧中找到“open in safari”并设置自己喜欢的快捷键。这里我设置为<code>Command+Shift+S</code>。</p>
 <p>这样，我们在Chrome中打开一个网页可以使用上面我们设置的快捷键使之在Safari中打开。</p>
 

@@ -87,12 +87,12 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="前言最近因为实验室项目和自己学习混合使用了很多语言，加上非常想尝试用Org-mode作为自己的GTD管理工具，因此选择了Emacs作为编辑器。 初次使用Emacs比较好的方法是使用大牛们的配置。最终我选择了Spacemacs，因为它有广泛的用户群体、合理的组织结构、丰富的用户文档，非常适合Emacs初学者，最重要的是它颜值高 内容根据Spacemacs上c-c++ layer的说明可以很轻松的完成">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2015/12/31/config-c-c-layer-for-in-spacemacs/config-c-c-layer-for-in-spacemacs/c_lib_path.png">
+<meta property="og:image" content="http://yoursite.com/2015/12/31/config-c-c-layer-for-in-spacemacs/c_lib_path.png">
 <meta property="og:updated_time" content="2016-05-01T14:42:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Configure c&#x2F;c++ layer for pure c in Spacemacs">
 <meta name="twitter:description" content="前言最近因为实验室项目和自己学习混合使用了很多语言，加上非常想尝试用Org-mode作为自己的GTD管理工具，因此选择了Emacs作为编辑器。 初次使用Emacs比较好的方法是使用大牛们的配置。最终我选择了Spacemacs，因为它有广泛的用户群体、合理的组织结构、丰富的用户文档，非常适合Emacs初学者，最重要的是它颜值高 内容根据Spacemacs上c-c++ layer的说明可以很轻松的完成">
-<meta name="twitter:image" content="http://yoursite.com/2015/12/31/config-c-c-layer-for-in-spacemacs/config-c-c-layer-for-in-spacemacs/c_lib_path.png">
+<meta name="twitter:image" content="http://yoursite.com/2015/12/31/config-c-c-layer-for-in-spacemacs/c_lib_path.png">
 
 
 
@@ -365,7 +365,7 @@
 <p>Mac OS X的C/C++头文件路径我真是无力吐槽了，打开终端输入</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo | clang -v -E -x c -</span><br></pre></td></tr></table></figure>
 <p>会出现</p>
-<p> <img src="config-c-c-layer-for-in-spacemacs/c_lib_path.png" alt="c_lib_path"></p>
+<p> <img src="/2015/12/31/config-c-c-layer-for-in-spacemacs/c_lib_path.png" alt="c_lib_path"></p>
 <p>把其中的</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include</span><br></pre></td></tr></table></figure>
 <p> 加入到global_config.py中的<code>default_flags</code>参数列表中，像这样</p>

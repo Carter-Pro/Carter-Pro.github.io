@@ -87,15 +87,15 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="最近GFW抽风，自己搭个梯子">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2016/04/05/VPS/VPS/1.png">
-<meta property="og:image" content="http://yoursite.com/2016/04/05/VPS/VPS/2.png">
-<meta property="og:image" content="http://yoursite.com/2016/04/05/VPS/VPS/3.png">
-<meta property="og:image" content="http://yoursite.com/2016/04/05/VPS/VPS/4.png">
-<meta property="og:updated_time" content="2016-04-24T14:24:41.000Z">
+<meta property="og:image" content="http://yoursite.com/2016/04/05/VPS/1.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/05/VPS/2.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/05/VPS/3.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/05/VPS/4.png">
+<meta property="og:updated_time" content="2018-06-29T15:51:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="科学上网">
 <meta name="twitter:description" content="最近GFW抽风，自己搭个梯子">
-<meta name="twitter:image" content="http://yoursite.com/2016/04/05/VPS/VPS/1.png">
+<meta name="twitter:image" content="http://yoursite.com/2016/04/05/VPS/1.png">
 
 
 
@@ -367,9 +367,9 @@
 <p>请将上述脚本保存为/etc/init.d/shadowsocks<br>并执行</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 /etc/init.d/shadowsocks &amp;&amp; chkconfig --add shadowsocks &amp;&amp; service shadowsocks start</span><br></pre></td></tr></table></figure>
 <h3 id="客户端配置"><a href="#客户端配置" class="headerlink" title="客户端配置"></a>客户端配置</h3><p>打开服务器设定</p>
-<p>  <img src="VPS/1.png" alt="1"></p>
+<p>  <img src="/2016/04/05/VPS/1.png" alt="1"></p>
 <p>添加服务器填写服务器ip、端口和密码，选择加密协议（和在服务器配置匹配）</p>
-<p>  <img src="VPS/2.png" alt="2"></p>
+<p>  <img src="/2016/04/05/VPS/2.png" alt="2"></p>
 <h1 id="配置Finalspeed"><a href="#配置Finalspeed" class="headerlink" title="配置Finalspeed"></a>配置Finalspeed</h1><h2 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h2><h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>如果修改了ssh默认端口，先开发ssh端口。方法如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">service iptables start</span><br><span class="line">iptables -I INPUT -p tcp --dport 端口号 -j ACCEPT</span><br><span class="line">iptables -I OUTPUT -p tcp --sport 端口号 -j ACCEPT</span><br><span class="line">service iptables save</span><br></pre></td></tr></table></figure>
 <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rm -f install_fs.sh</span><br><span class="line">wget  http://fs.d1sm.net/finalspeed/install_fs.sh</span><br><span class="line">chmod +x install_fs.sh</span><br><span class="line">./install_fs.sh 2&gt;&amp;1 | tee install.log</span><br></pre></td></tr></table></figure>
@@ -381,13 +381,15 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod +x /etc/rc.local</span><br><span class="line">vi /etc/rc.local</span><br></pre></td></tr></table></figure>
 <h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><p><a href="http://fs.d1sm.net/finalspeed/finalspeed_client1.0.zip" target="_blank" rel="noopener">客户端</a></p>
 <h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><ol>
-<li>运行FinalSpeed客户端,填写服务器地址。</li>
-<li>点击添加,增加加速端口,加速端口为ss端口8989,如果为其他端口,请相应修改,本地端口任意,这里是2000。</li>
-<li>打开ss客户端,添加服务器,服务器IP为127.0.0.1,服务器端口为加速端口对应的本地端口,这里是2000,然后设置你的ss密码,加密方式。</li>
+<li><p>运行FinalSpeed客户端,填写服务器地址。</p>
+</li>
+<li><p>点击添加,增加加速端口,加速端口为ss端口8989,如果为其他端口,请相应修改,本地端口任意,这里是2000。</p>
+</li>
+<li><p>打开ss客户端,添加服务器,服务器IP为127.0.0.1,服务器端口为加速端口对应的本地端口,这里是2000,然后设置你的ss密码,加密方式。</p>
+</li>
 <li><p>确定保存,选择使用刚添加的服务器,并设置浏览器代理,成功连接后,FinalSpeed状态栏会出现”连接服务器成功”提示。</p>
-<p>​</p>
-<p> <img src="VPS/3.png" alt="3"></p>
-<p><img src="VPS/4.png" alt="4"></p>
+<p><img src="/2016/04/05/VPS/3.png" alt="3"></p>
+<p><img src="/2016/04/05/VPS/4.png" alt="4"></p>
 </li>
 </ol>
 <h2 id="关于UDP和TCP"><a href="#关于UDP和TCP" class="headerlink" title="关于UDP和TCP"></a>关于UDP和TCP</h2><p>为了方便小白稍微解释一下。</p>

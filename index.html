@@ -759,62 +759,14 @@
 
       
         
-          
-            <p>今天碰到一个涉及到<strong>负数取模</strong>的问题不知道怎么算了。在研究的过程中发现自己以往一直把取模(modulus)和取余(remainder)当做一个概念用，但是这两个概念是不是一样的呢？</p>
-<p>参考</p>
-<ol>
-<li><a href="http://www.jianshu.com/p/452c1a5acd31" target="_blank" rel="noopener">负数取模怎么算</a></li>
-<li><a href="http://ceeji.net/blog/mod-in-real/" target="_blank" rel="noopener">实数范围内的求模（求余）运算：负数求余究竟怎么求</a></li>
-<li><a href="http://stackoverflow.com/questions/13683563/whats-the-difference-between-mod-and-remainder" target="_blank" rel="noopener">What’s the difference between “mod” and “remainder”?</a></li>
-</ol>
-<h1 id="数学上取模与取余"><a href="#数学上取模与取余" class="headerlink" title="数学上取模与取余"></a>数学上取模与取余</h1><h2 id="取模和取余的步骤"><a href="#取模和取余的步骤" class="headerlink" title="取模和取余的步骤"></a>取模和取余的步骤</h2><p>对于整数<code>a</code>和<code>b</code>来说，取模运算和取余运算步骤是一样的。</p>
-<ol>
-<li><p>求整数商<code>c</code></p>
-<p>$$<br>c = a / b<br>$$</p>
-<p>​</p>
-</li>
-<li><p>计算模/余数<code>r</code></p>
-<p>$$<br>r = a - c * b<br>$$</p>
-</li>
-</ol>
-<h2 id="取模和取余区别"><a href="#取模和取余区别" class="headerlink" title="取模和取余区别"></a>取模和取余区别</h2><p>取模和取余的区别在于第一步计算整数商<code>c</code>时取整的方法不一样。</p>
-<h3 id="整数除法取整的3种方法"><a href="#整数除法取整的3种方法" class="headerlink" title="整数除法取整的3种方法"></a>整数除法取整的3种方法</h3><ol>
-<li><strong>向上取整</strong>，向+∞方向取最接近精确值的整数，也就是取比实际结果稍大的最小整数，也叫 Ceiling 取整。这种取整方式下，17 / 10 == 2，5 / 2 == 3, -9 / 4 == -2。</li>
-<li><strong>向下取整</strong>，向-∞方向取最接近精确值的整数，也就是取比实际结果稍小的最大整数，也叫 Floor 取整。这种取整方式下，17 / 10 == 1，5 / 2 == 2, -9 / 4 == -3。</li>
-<li><strong>向零取整</strong>，向0方向取最接近精确值的整数，换言之就是舍去小数部分，因此又称截断取整（Truncate）。这种取整方式下，17 / 10 == 1，5 / 2 == 2, -9 / 4 == -2。</li>
-</ol>
-<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>其中，<strong>取余</strong>使用了<strong>向零取整</strong>，<strong>取模</strong>使用了<strong>向下取整</strong>。</p>
-<p>因此，在被除数与除数<strong>符号一致</strong>的情况下，取模与取余结果是相同的。</p>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例如：计算-7 Mod 4</p>
-<p>那么：<code>a</code> = -7；<code>b</code>= 4；</p>
-<ol>
-<li>求整数商<code>c</code>。如进行求模运算<code>c</code> = -2（向负无穷方向舍入），求余<code>c</code> = -1（向0方向舍入）；</li>
-<li>计算模和余数的公式相同，但因c的值不同，求模时<code>r</code> = 1，求余时<code>r</code> = -3。</li>
-</ol>
-<h1 id="计算机的取模和取余"><a href="#计算机的取模和取余" class="headerlink" title="计算机的取模和取余"></a>计算机的取模和取余</h1><p>在流行编程语言中（除了matlab），<code>%</code>就是取余（至少在C、C++、Java和C#是这样的），教科书将这两个概念同化了。</p>
-<p>看一下C和Python计算上述例子。</p>
-<table>
-<thead>
-<tr>
-<th>语言</th>
-<th>计算结果</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>C</td>
-<td>-3</td>
-</tr>
-<tr>
-<td>Python</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-<p>因为C语言在整除时使用了向零取整，Python使用了向下取整。</p>
-<p>与C语言习惯相同的还有C++与Java。</p>
-
-          
+          今天碰到一个涉及到负数取模的问题不知道怎么算了。在研究的过程中发现自己以往一直把取模(modulus)和取余(remainder)当做一个概念用，但是这两个概念是不是一样的呢？
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/02/27/ModAndRem/">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1103,7 +1055,7 @@
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>pointer.c</code>是xv6 Lab1练习4中提供的一份学习c指针的代码，代码很简单，但是有一部分的内容还是很值得琢磨的。</p>
 <h1 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h1><h2 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">f(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">int</span> *b = <span class="built_in">malloc</span>(<span class="number">16</span>);</span><br><span class="line">    <span class="keyword">int</span> *c;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"1: a = %p, b = %p, c = %p\n"</span>, a, b, c);</span><br><span class="line"></span><br><span class="line">    c = a;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)</span><br><span class="line">	a[i] = <span class="number">100</span> + i;</span><br><span class="line">    c[<span class="number">0</span>] = <span class="number">200</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"2: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n"</span>,</span><br><span class="line">	   a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>], a[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    c[<span class="number">1</span>] = <span class="number">300</span>;</span><br><span class="line">    *(c + <span class="number">2</span>) = <span class="number">301</span>;</span><br><span class="line">    <span class="number">3</span>[c] = <span class="number">302</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"3: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n"</span>,</span><br><span class="line">	   a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>], a[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    c = c + <span class="number">1</span>;</span><br><span class="line">    *c = <span class="number">400</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"4: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n"</span>,</span><br><span class="line">	   a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>], a[<span class="number">3</span>]);</span><br><span class="line">    c = (<span class="keyword">int</span> *) ((<span class="keyword">char</span> *) c + <span class="number">1</span>);</span><br><span class="line">    *c = <span class="number">500</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"5: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n"</span>,</span><br><span class="line">	   a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>], a[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    b = (<span class="keyword">int</span> *) a + <span class="number">1</span>;</span><br><span class="line">    c = (<span class="keyword">int</span> *) ((<span class="keyword">char</span> *) a + <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"6: a = %p, b = %p, c = %p\n"</span>, a, b, c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">main(<span class="keyword">int</span> ac, <span class="keyword">char</span> **av)</span><br><span class="line">&#123;</span><br><span class="line">    f();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h2><p>运行结果如下图</p>
-<p> <img src="Pointer/1.png" alt="1"></p>
+<p> <img src="/2016/02/05/Pointer/1.png" alt="1"></p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>运行结果中的1-4很简单没什么好说的，主要解析下5、6。</p>
 <p>需要注意源代码中<code>第31行</code></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c = (<span class="keyword">int</span> *) ((<span class="keyword">char</span> *) c + <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
@@ -1116,20 +1068,20 @@
 <p>这里值得一提的是，<code>int</code>占4byte，<code>char</code>占1byte，因此c内存位置增长了1byte。那为什么在执行了</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*c = <span class="number">500</span>;</span><br></pre></td></tr></table></figure>
 <p>之后<code>a[1]</code>、<code>a[2]</code>的值变成上图那样了呢？我们画个图来说明一下。图中内存从左至右、从下至上内存增长。</p>
-<p> <img src="Pointer/2.png" alt="2"></p>
+<p> <img src="/2016/02/05/Pointer/2.png" alt="2"></p>
 <p>图中一个框就是1byte，数组<code>a</code>是<code>int</code>因此栈4个位置。上文分析我们发现在执行代码<code>c = (int *) ((char *) c + 1);</code>后<code>c</code>指向的内存位置增加1，因此<code>c</code>指针指向位置如上图。当执行代码<code>*c = 500</code>时，存储数值的内存位置如上图被红框框住的位置，因此数组<code>a</code>中存储的数值被改变。</p>
 <p><strong>注意！如果按照上图将内存中数值修改得到的结果与运行结果不同。</strong></p>
 <p>通过调试追踪发现修改前后内存中数据是这样的。</p>
-<p> <img src="Pointer/3.png" alt="3"></p>
+<p> <img src="/2016/02/05/Pointer/3.png" alt="3"></p>
 <p>原因是在内存中使用的是<strong>小端模式(Little-endian)</strong>的字节序。即</p>
 <blockquote>
 <p>小端模式，是指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中，这种存储模式将地址的高低和数据位权有效地结合起来，高地址部分权值高，低地址部分权值低，和我们的逻辑方法一致。</p>
 </blockquote>
 <p>我们重新画图。</p>
 <p>修改前内存内容</p>
-<p> <img src="Pointer/4.png" alt="4"></p>
+<p> <img src="/2016/02/05/Pointer/4.png" alt="4"></p>
 <p>修改后内存内容</p>
-<p> <img src="Pointer/5.png" alt="5"></p>
+<p> <img src="/2016/02/05/Pointer/5.png" alt="5"></p>
 <p>6的原理与5相同不再赘述。</p>
 
           
@@ -1313,7 +1265,7 @@
 <p>Mac OS X的C/C++头文件路径我真是无力吐槽了，打开终端输入</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo | clang -v -E -x c -</span><br></pre></td></tr></table></figure>
 <p>会出现</p>
-<p> <img src="config-c-c-layer-for-in-spacemacs/c_lib_path.png" alt="c_lib_path"></p>
+<p> <img src="/2015/12/31/config-c-c-layer-for-in-spacemacs/c_lib_path.png" alt="c_lib_path"></p>
 <p>把其中的</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include</span><br></pre></td></tr></table></figure>
 <p> 加入到global_config.py中的<code>default_flags</code>参数列表中，像这样</p>

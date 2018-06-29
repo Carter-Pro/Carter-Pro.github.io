@@ -87,12 +87,12 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/OrgPomodoroNotifier/1.png">
-<meta property="og:updated_time" content="2016-05-05T23:55:13.000Z">
+<meta property="og:image" content="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/1.png">
+<meta property="og:updated_time" content="2018-06-29T15:52:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="给 org-pomodoro 增加桌面通知功能">
 <meta name="twitter:description" content="使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能">
-<meta name="twitter:image" content="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/OrgPomodoroNotifier/1.png">
+<meta name="twitter:image" content="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/1.png">
 
 
 
@@ -340,7 +340,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install terminal-notifier</span><br><span class="line">brew linkapps</span><br></pre></td></tr></table></figure>
 <h2 id="定义通知函数"><a href="#定义通知函数" class="headerlink" title="定义通知函数"></a>定义通知函数</h2><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">defun</span> notify-osx (<span class="name">title</span> message)   </span><br><span class="line">	(<span class="name">call-process</span> <span class="string">"terminal-notifier"</span>		 </span><br><span class="line">		<span class="literal">nil</span> <span class="number">0</span> <span class="literal">nil</span>		 </span><br><span class="line">		<span class="string">"-group"</span> <span class="string">"Emacs"</span>		 </span><br><span class="line">		<span class="string">"-title"</span> title		 </span><br><span class="line">		<span class="string">"-sender"</span> <span class="string">"org.gnu.Emacs"</span>		 </span><br><span class="line">		<span class="string">"-message"</span> message		 </span><br><span class="line">		<span class="string">"-activate"</span> <span class="string">"oeg.gnu.Emacs"</span>))</span><br></pre></td></tr></table></figure>
 <h2 id="定制通知内容"><a href="#定制通知内容" class="headerlink" title="定制通知内容"></a>定制通知内容</h2><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro completed!"</span> <span class="string">"Time for a break."</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-break-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">        (<span class="name">notify-osx</span> <span class="string">"Pomodoro Short Break Finished"</span> <span class="string">"Ready for Another?"</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-long-break-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro Long Break Finished"</span> <span class="string">"Ready for Another?"</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-killed-hook    </span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro Killed"</span> <span class="string">"One does not simply kill a pomodoro!"</span>)))</span><br></pre></td></tr></table></figure>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p> <img src="OrgPomodoroNotifier/1.png" alt="1"></p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p> <img src="/2016/05/05/OrgPomodoroNotifier/1.png" alt="1"></p>
 
       
     </div>
