@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Emacs,org-mode," />
+  <meta name="keywords" content="Linux," />
 
 
 
@@ -79,20 +79,18 @@
 
 
 
-<meta name="description" content="使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能">
-<meta name="keywords" content="Emacs,org-mode">
+<meta name="description" content="在 Linux 下给一块网卡配置多个 IP，基本逻辑就是给一个网卡起一个别名，在别名的逻辑网卡上配置 IP 地址。">
+<meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="给 org-pomodoro 增加桌面通知功能">
-<meta property="og:url" content="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/index.html">
+<meta property="og:title" content="Linux 单网卡配置多 IP">
+<meta property="og:url" content="http://yoursite.com/2018/07/23/linux-multiIP-on-singel-inetface/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能">
+<meta property="og:description" content="在 Linux 下给一块网卡配置多个 IP，基本逻辑就是给一个网卡起一个别名，在别名的逻辑网卡上配置 IP 地址。">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/1.png">
-<meta property="og:updated_time" content="2018-06-29T15:52:08.000Z">
+<meta property="og:updated_time" content="2018-07-23T11:33:15.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="给 org-pomodoro 增加桌面通知功能">
-<meta name="twitter:description" content="使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能">
-<meta name="twitter:image" content="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/1.png">
+<meta name="twitter:title" content="Linux 单网卡配置多 IP">
+<meta name="twitter:description" content="在 Linux 下给一块网卡配置多个 IP，基本逻辑就是给一个网卡起一个别名，在别名的逻辑网卡上配置 IP 地址。">
 
 
 
@@ -122,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/07/23/linux-multiIP-on-singel-inetface/"/>
 
 
 
 
 
-  <title>给 org-pomodoro 增加桌面通知功能 | GuLei's Lab</title>
+  <title>Linux 单网卡配置多 IP | GuLei's Lab</title>
   
 
 
@@ -235,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/05/OrgPomodoroNotifier/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/23/linux-multiIP-on-singel-inetface/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Lei">
@@ -252,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">给 org-pomodoro 增加桌面通知功能</h1>
+          <h1 class="post-title" itemprop="name headline">Linux 单网卡配置多 IP</h1>
         
 
         <div class="post-meta">
@@ -264,8 +262,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-05T11:11:52+08:00">
-                2016-05-05
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-23T19:01:57+08:00">
+                2018-07-23
               </time>
             
 
@@ -275,28 +273,6 @@
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Emacs/" itemprop="url" rel="index">
-                    <span itemprop="name">Emacs</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -309,10 +285,6 @@
 
           
 
-          
-              <div class="post-description">
-                  使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能
-              </div>
           
 
         </div>
@@ -328,19 +300,41 @@
       
 
       
-        <p>因为我不是那么追求对 Emacs 使用的极致，在使用 <code>org-mode</code> 作为 <code>GTD</code> 工具的时候，会跳出 Emacs 使用别的工具。因此经常会因为看不到 <code>org-pomodoro</code> 的提示而忘记休息、开启新的番茄时钟。 那么，如果能让番茄时钟在工作、休息结束时跳出桌面通知，那就非常方便了。</p>
-<h1 id="实现-Emacs-和系统交互"><a href="#实现-Emacs-和系统交互" class="headerlink" title="实现 Emacs 和系统交互"></a>实现 Emacs 和系统交互</h1><p>想要让 <code>org-pomodoro</code> 在工作、休息结束时通知操作系统，我们就需要一个 <strong>中间件</strong> 来作为 <code>Emacs</code> 和 <code>OS</code> 交流的桥梁。幸运的是，这个桥梁已经有人做好啦，我查找到的资料有两个选择</p>
+        <p>在 Linux 下给一块网卡配置多个 IP，基本逻辑就是给一个网卡起一个别名，在别名的逻辑网卡上配置 IP 地址。</p>
+<a id="more"></a>
+<h1 id="1-临时方法"><a href="#1-临时方法" class="headerlink" title="1. 临时方法"></a>1. 临时方法</h1><p>使用以下两种工具可以临时配置 IP，但是每次重启网络服务后配置会消失。</p>
+<h2 id="1-1-工具"><a href="#1-1-工具" class="headerlink" title="1.1 工具"></a>1.1 工具</h2><p>Linux 上管理网络的工具有两种，一个是 net-tools中提供的<strong>ifconfig</strong>，一个是 iproute2提供的<strong>ip addr</strong>。net-tools 起源与 BSD，自2001年起，Linux 社区就停止了对这个工具的维护，而 iproute2旨在取代这个工具，并提供一些新功能。</p>
+<p>net-tools 通过<code>procfs(/proc)</code>和<code>ioctl</code>系统调用去访问和改变内核网络配置，而 iproute2则通过<code>netlink</code>套接字接口与内核通信。</p>
+<p>net-tools 中工具名字比较杂乱，而 iproute2相关规范，基本是<code>ip &lt;subcmd&gt;</code>的格式。</p>
+<p>但是基于 net-tools 的广泛使用，还是两种命令都掌握比较好。</p>
+<h2 id="1-2-ifconfig"><a href="#1-2-ifconfig" class="headerlink" title="1.2 ifconfig"></a>1.2 ifconfig</h2><h3 id="1-2-1-增加IP"><a href="#1-2-1-增加IP" class="headerlink" title="1.2.1 增加IP"></a>1.2.1 增加IP</h3><p>使用 ifconfig 配置 ip，命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig &lt;网卡名&gt; &lt;ip 地址&gt; netmask &lt;子网掩码&gt;</span><br></pre></td></tr></table></figure>
+<p>例如在网卡<code>eth0</code>上增加 ip<code>192.168.0.2/24</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0:1 192.169.0.2 netmask 255.255.255.0</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-2-删除IP"><a href="#1-2-2-删除IP" class="headerlink" title="1.2.2 删除IP"></a>1.2.2 删除IP</h3><p>使用 ifconfig 删除 ip，命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig &lt;网卡名&gt; down</span><br></pre></td></tr></table></figure>
+<p> 如删除刚配置的 ip：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0:1 down</span><br></pre></td></tr></table></figure>
+<h2 id="1-3-ip-addr"><a href="#1-3-ip-addr" class="headerlink" title="1.3 ip addr"></a>1.3 ip addr</h2><h3 id="1-3-1-增加IP"><a href="#1-3-1-增加IP" class="headerlink" title="1.3.1 增加IP"></a>1.3.1 增加IP</h3><p>命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr add &lt;ip&gt; dev &lt;网卡名&gt;</span><br></pre></td></tr></table></figure>
+<p>同上，在网卡<code>eth0</code>上增加 ip<code>192.168.0.2/24</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr add 192.168.0.2/24 dev eth0</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-2-删除IP"><a href="#1-3-2-删除IP" class="headerlink" title="1.3.2 删除IP"></a>1.3.2 删除IP</h3><p>命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr delete &lt;ip&gt; dev &lt;网卡名&gt;</span><br></pre></td></tr></table></figure>
+<p>删除刚配置的ip:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr delete 192.168.0.2/24 dev eth0</span><br></pre></td></tr></table></figure>
+<h2 id="2-永久方法"><a href="#2-永久方法" class="headerlink" title="2. 永久方法"></a>2. 永久方法</h2><p>修改网卡配置文件，可以保证配置不会丢失。配置过程如下（CentOS/Red Hat）：</p>
 <ol>
-<li><a href="https://github.com/julienXX/terminal-notifier" target="_blank" rel="noopener">terminal-notifier</a>: 一个开源的命令行消息通知插件。但是只支持 <strong>Mac OS X</strong> ；</li>
-<li><a href="http://growl.info/" target="_blank" rel="noopener">Growl</a>: 一个收费的软件，支持 Mac OS X，同时有<a href="http://www.growlforwindows.com/gfw/help/growlnotify.aspx" target="_blank" rel="noopener">Windows 版</a>（我不清楚是否收费）和一个重新实现的开源的<a href="https://github.com/mattn/growl-for-linux" target="_blank" rel="noopener">Linux 版</a>。</li>
+<li>进入网络配置文件目录<code>cd /etc/sysconfig/network-scripts/</code></li>
+<li>将网络配置文件<code>ifcfg-xxx</code>例如<code>ifcfg-eth0</code>做一个拷贝：<code>cp ifcfg-eth0 ifcfg-eth0:1</code>；</li>
+<li>编辑<code>ifcfg-eth0:1</code>，修改以下几个字段：<ul>
+<li><code>NAME</code>：将原名例如<code>eth0</code>改为<code>eth0:1</code>；</li>
+<li><code>DEVICE</code>:将原名例如<code>eth0</code>改为<code>eth0:1</code>；</li>
+<li><code>IPADDR</code>:修改为指定 IP 地址。</li>
+</ul>
+</li>
+<li>重启网络<code>systemctl restart network</code></li>
 </ol>
-<p>我使用的是 Mac，虽然 <code>Growl</code> 价格只有 25RMB，但是我更倾向使用开源软件。</p>
-<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>这里我介绍一下使用 <code>terminal-notifier</code> 的配置方法，如果你使用 <code>Growl</code> 可以参考<a href="https://github.com/zilongshanren/spacemacs-private/blob/f9c44737938204042924556334a94b85e3e14c02/layers/guanghui/packages.el" target="_blank" rel="noopener">子龙山人</a> 的配置。</p>
-<h2 id="安装-terminal-notifier"><a href="#安装-terminal-notifier" class="headerlink" title="安装 terminal-notifier"></a>安装 terminal-notifier</h2><p>安装 <code>terminal-notifier</code> 非常简单，只需要两步。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install terminal-notifier</span><br><span class="line">brew linkapps</span><br></pre></td></tr></table></figure>
-<h2 id="定义通知函数"><a href="#定义通知函数" class="headerlink" title="定义通知函数"></a>定义通知函数</h2><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">defun</span> notify-osx (<span class="name">title</span> message)   </span><br><span class="line">	(<span class="name">call-process</span> <span class="string">"terminal-notifier"</span>		 </span><br><span class="line">		<span class="literal">nil</span> <span class="number">0</span> <span class="literal">nil</span>		 </span><br><span class="line">		<span class="string">"-group"</span> <span class="string">"Emacs"</span>		 </span><br><span class="line">		<span class="string">"-title"</span> title		 </span><br><span class="line">		<span class="string">"-sender"</span> <span class="string">"org.gnu.Emacs"</span>		 </span><br><span class="line">		<span class="string">"-message"</span> message		 </span><br><span class="line">		<span class="string">"-activate"</span> <span class="string">"oeg.gnu.Emacs"</span>))</span><br></pre></td></tr></table></figure>
-<h2 id="定制通知内容"><a href="#定制通知内容" class="headerlink" title="定制通知内容"></a>定制通知内容</h2><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro completed!"</span> <span class="string">"Time for a break."</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-break-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">        (<span class="name">notify-osx</span> <span class="string">"Pomodoro Short Break Finished"</span> <span class="string">"Ready for Another?"</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-long-break-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro Long Break Finished"</span> <span class="string">"Ready for Another?"</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-killed-hook    </span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro Killed"</span> <span class="string">"One does not simply kill a pomodoro!"</span>)))</span><br></pre></td></tr></table></figure>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p> <img src="/2016/05/05/OrgPomodoroNotifier/1.png" alt="1"></p>
 
       
     </div>
@@ -358,9 +352,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Emacs/" rel="tag"># Emacs</a>
-          
-            <a href="/tags/org-mode/" rel="tag"># org-mode</a>
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
           
         </div>
       
@@ -373,8 +365,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/05/VPS/" rel="next" title="科学上网">
-                <i class="fa fa-chevron-left"></i> 科学上网
+              <a href="/2018/07/23/LDAP1/" rel="next" title="LDAP1">
+                <i class="fa fa-chevron-left"></i> LDAP1
               </a>
             
           </div>
@@ -382,10 +374,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/23/LDAP1/" rel="prev" title="LDAP1">
-                LDAP1 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -517,7 +505,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#实现-Emacs-和系统交互"><span class="nav-number">1.</span> <span class="nav-text">实现 Emacs 和系统交互</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-terminal-notifier"><span class="nav-number">2.1.</span> <span class="nav-text">安装 terminal-notifier</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义通知函数"><span class="nav-number">2.2.</span> <span class="nav-text">定义通知函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定制通知内容"><span class="nav-number">2.3.</span> <span class="nav-text">定制通知内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">2.4.</span> <span class="nav-text">效果</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-临时方法"><span class="nav-number">1.</span> <span class="nav-text">1. 临时方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-工具"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-ifconfig"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 ifconfig</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-增加IP"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.2.1 增加IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2-删除IP"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2.2 删除IP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-ip-addr"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 ip addr</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1-增加IP"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.3.1 增加IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2-删除IP"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.3.2 删除IP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-永久方法"><span class="nav-number">1.4.</span> <span class="nav-text">2. 永久方法</span></a></li></ol></li></ol></div>
             
 
           </div>
