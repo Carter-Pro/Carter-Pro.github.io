@@ -79,18 +79,21 @@
 
 
 
-<meta name="description" content="5分钟快速配置 CentOS/RedHat 7.x LDAP 客户端。">
+<meta name="description" content="5分钟快速配置 CentOS 7.x LDAP 客户端。">
 <meta name="keywords" content="LDAP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LDAP系列（2）：快速配置 LDAP 客户端">
 <meta property="og:url" content="http://yoursite.com/2018/07/29/LDAP2/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="5分钟快速配置 CentOS/RedHat 7.x LDAP 客户端。">
+<meta property="og:description" content="5分钟快速配置 CentOS 7.x LDAP 客户端。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-29T04:46:53.000Z">
+<meta property="og:image" content="http://yoursite.com/2018/07/29/LDAP2/authconfig-tui-1.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/29/LDAP2/authconfig-tui-2.png">
+<meta property="og:updated_time" content="2018-07-29T05:51:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LDAP系列（2）：快速配置 LDAP 客户端">
-<meta name="twitter:description" content="5分钟快速配置 CentOS/RedHat 7.x LDAP 客户端。">
+<meta name="twitter:description" content="5分钟快速配置 CentOS 7.x LDAP 客户端。">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/29/LDAP2/authconfig-tui-1.png">
 
 
 
@@ -310,8 +313,36 @@
       
 
       
-        <p>5分钟快速配置 CentOS/RedHat 7.x LDAP 客户端。</p>
+        <p>5分钟快速配置 CentOS 7.x LDAP 客户端。</p>
 <a id="more"></a>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>首先安装依赖包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install openldap-clients nscd nss-pam-ldapd</span><br></pre></td></tr></table></figure>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>在 CentOS 和 Redhat 系列发行版中，可以选择使用系统工具自动配置，也可以使用手动方式手动配置 LDAP 客户端。</p>
+<h2 id="系统工具"><a href="#系统工具" class="headerlink" title="系统工具"></a>系统工具</h2><p>该系列发行版中已经提供了<code>authconfig/authconfig-tui</code>一个命令行工具一个CUI 工具。</p>
+<h3 id="authconfig"><a href="#authconfig" class="headerlink" title="authconfig"></a>authconfig</h3><p>使用如下命令配置 LDAP 服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">authconfig --enableldap --enableldapauth --ldapserver=&lt;服务器&gt; --ldapbasedn=&lt;dn&gt; [--enableldaptls] [--ldaploadcacert=&lt;URL&gt;]</span><br></pre></td></tr></table></figure>
+<p>其中，<code>服务器</code>填写 LDAP 的 IP 地址或者域名；<code>dn</code>填写 LADP 服务器的 basedn；方括号里关于 tls 可选填，都是关于安全的配置。</p>
+<h3 id="authconfig-tui"><a href="#authconfig-tui" class="headerlink" title="authconfig-tui"></a>authconfig-tui</h3><p>使用 CUI，首先选择<code>使用LDAP</code>和<code>使用 LDAP 认证</code>：</p>
+<p><img src="/2018/07/29/LDAP2/authconfig-tui-1.png" alt="image-20180729131515216"></p>
+<p>然后，填写配置信息：</p>
+<p><img src="/2018/07/29/LDAP2/authconfig-tui-2.png" alt="image-20180729131707934"></p>
+<p>如选择了<code>使用 TLS</code>，根据提示将证书拷贝到指定位置。</p>
+<h2 id="手动配置"><a href="#手动配置" class="headerlink" title="手动配置"></a>手动配置</h2><p>使用系统配置的好处的方便，但是有时候我们需要更多灵活配置则需要自己手动设置。</p>
+<p>首先，编辑<code>/etc/sysconfig/authconfig</code>，修改操作系统的认证配置内容。修改以下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">USELDAP=yes</span><br><span class="line">USELDAPAUTH=yes</span><br></pre></td></tr></table></figure>
+<p> 其次，修改<code>/etc/nsswitch.conf</code>，修改命名空间转换配置。修改以下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">passwd:     files ldap</span><br><span class="line">shadow:     files </span><br><span class="line">group:      files ldap</span><br></pre></td></tr></table></figure>
+<p>然后，修改<code>/etc/pam.d/password-auth</code>和<code>/etc/pam.d/password-auth</code>，修改 pam 模块的设置。</p>
+<p>其中， 在<code>password-auth</code>增加以下内容:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#TODO</span><br></pre></td></tr></table></figure>
+<p> 在<code>system-auth</code>增加以下内容:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#TODO</span><br></pre></td></tr></table></figure>
+<p>最后，重启 nslcd 服务（namespace ldap client daemon）:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systecmctl restart nslcd</span><br></pre></td></tr></table></figure>
+<h3 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h3><p>如果使用了 TLS 加密，修改以下配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo "TLS_REQCERT allow" &gt;&gt; /etc/openldap/ldap.conf </span><br><span class="line">echo "tls_reqcert allow" &gt;&gt; /etc/nslcd.conf</span><br></pre></td></tr></table></figure>
+<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>验证 LDAP 客户端是否配置成功，可以简单使用以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> method 1</span><br><span class="line">ldapsearch -x </span><br><span class="line"><span class="meta">#</span> method 2</span><br><span class="line">id &lt;ldap username&gt;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -402,8 +433,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -467,6 +507,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统工具"><span class="nav-number">2.1.</span> <span class="nav-text">系统工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#authconfig"><span class="nav-number">2.1.1.</span> <span class="nav-text">authconfig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#authconfig-tui"><span class="nav-number">2.1.2.</span> <span class="nav-text">authconfig-tui</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动配置"><span class="nav-number">2.2.</span> <span class="nav-text">手动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS"><span class="nav-number">2.2.1.</span> <span class="nav-text">TLS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#验证"><span class="nav-number">3.</span> <span class="nav-text">验证</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
