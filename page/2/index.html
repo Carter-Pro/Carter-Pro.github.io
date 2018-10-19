@@ -242,6 +242,324 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/24/OpenInSafari/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gu Lei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/myface.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GuLei's Lab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/02/24/OpenInSafari/" itemprop="url">在Safari中打开Chrome的当前页</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-24T13:35:09+08:00">
+                2016-02-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mac配置/" itemprop="url" rel="index">
+                    <span itemprop="name">Mac配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          通过脚本使用快捷键在Safari中打开Chrome的当前网页
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/02/24/OpenInSafari/">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/05/Pointer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gu Lei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/myface.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GuLei's Lab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/02/05/Pointer/" itemprop="url">Pointer.c 代码分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-05T18:11:32+08:00">
+                2016-02-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>pointer.c</code>是xv6 Lab1练习4中提供的一份学习c指针的代码，代码很简单，但是有一部分的内容还是很值得琢磨的。</p>
+<h1 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h1><h2 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">f(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">int</span> *b = <span class="built_in">malloc</span>(<span class="number">16</span>);</span><br><span class="line">    <span class="keyword">int</span> *c;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"1: a = %p, b = %p, c = %p\n"</span>, a, b, c);</span><br><span class="line"></span><br><span class="line">    c = a;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)</span><br><span class="line">	a[i] = <span class="number">100</span> + i;</span><br><span class="line">    c[<span class="number">0</span>] = <span class="number">200</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"2: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n"</span>,</span><br><span class="line">	   a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>], a[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    c[<span class="number">1</span>] = <span class="number">300</span>;</span><br><span class="line">    *(c + <span class="number">2</span>) = <span class="number">301</span>;</span><br><span class="line">    <span class="number">3</span>[c] = <span class="number">302</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"3: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n"</span>,</span><br><span class="line">	   a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>], a[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    c = c + <span class="number">1</span>;</span><br><span class="line">    *c = <span class="number">400</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"4: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n"</span>,</span><br><span class="line">	   a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>], a[<span class="number">3</span>]);</span><br><span class="line">    c = (<span class="keyword">int</span> *) ((<span class="keyword">char</span> *) c + <span class="number">1</span>);</span><br><span class="line">    *c = <span class="number">500</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"5: a[0] = %d, a[1] = %d, a[2] = %d, a[3] = %d\n"</span>,</span><br><span class="line">	   a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>], a[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    b = (<span class="keyword">int</span> *) a + <span class="number">1</span>;</span><br><span class="line">    c = (<span class="keyword">int</span> *) ((<span class="keyword">char</span> *) a + <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"6: a = %p, b = %p, c = %p\n"</span>, a, b, c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">main(<span class="keyword">int</span> ac, <span class="keyword">char</span> **av)</span><br><span class="line">&#123;</span><br><span class="line">    f();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h2><p>运行结果如下图</p>
+<p> <img src="/2016/02/05/Pointer/1.png" alt="1"></p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>运行结果中的1-4很简单没什么好说的，主要解析下5、6。</p>
+<p>需要注意源代码中<code>第31行</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c = (<span class="keyword">int</span> *) ((<span class="keyword">char</span> *) c + <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<p>这行代码有三个步骤：</p>
+<ol>
+<li>将<code>int *</code>型的指针<code>c</code>转换为<code>char *</code>型。</li>
+<li><code>c</code>值增加1。</li>
+<li>将<code>c</code>指针类型转换成<code>int *</code>型。</li>
+</ol>
+<p>这里值得一提的是，<code>int</code>占4byte，<code>char</code>占1byte，因此c内存位置增长了1byte。那为什么在执行了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*c = <span class="number">500</span>;</span><br></pre></td></tr></table></figure>
+<p>之后<code>a[1]</code>、<code>a[2]</code>的值变成上图那样了呢？我们画个图来说明一下。图中内存从左至右、从下至上内存增长。</p>
+<p> <img src="/2016/02/05/Pointer/2.png" alt="2"></p>
+<p>图中一个框就是1byte，数组<code>a</code>是<code>int</code>因此栈4个位置。上文分析我们发现在执行代码<code>c = (int *) ((char *) c + 1);</code>后<code>c</code>指向的内存位置增加1，因此<code>c</code>指针指向位置如上图。当执行代码<code>*c = 500</code>时，存储数值的内存位置如上图被红框框住的位置，因此数组<code>a</code>中存储的数值被改变。</p>
+<p><strong>注意！如果按照上图将内存中数值修改得到的结果与运行结果不同。</strong></p>
+<p>通过调试追踪发现修改前后内存中数据是这样的。</p>
+<p> <img src="/2016/02/05/Pointer/3.png" alt="3"></p>
+<p>原因是在内存中使用的是<strong>小端模式(Little-endian)</strong>的字节序。即</p>
+<blockquote>
+<p>小端模式，是指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中，这种存储模式将地址的高低和数据位权有效地结合起来，高地址部分权值高，低地址部分权值低，和我们的逻辑方法一致。</p>
+</blockquote>
+<p>我们重新画图。</p>
+<p>修改前内存内容</p>
+<p> <img src="/2016/02/05/Pointer/4.png" alt="4"></p>
+<p>修改后内存内容</p>
+<p> <img src="/2016/02/05/Pointer/5.png" alt="5"></p>
+<p>6的原理与5相同不再赘述。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/31/config-c-c-layer-for-in-spacemacs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -478,7 +796,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -500,7 +818,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
