@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。 前提在结合 LDAP 和 Samba 时请确保已有 LDAP 服务器和 Samba 服务器。 LDAP 服务器配置参见LDAP 系列（1）：快速搭建 LDAP 服务器。假设LDAP 服务器参数如下：    参数 值     DN dc=hikscale,dc=com   IP地址 192.16">
+<meta name="description" content="本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。">
 <meta name="keywords" content="LDAP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LDAP 系列（3）：Samba over LDAP">
 <meta property="og:url" content="http://yoursite.com/2018/07/29/LDAP3/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。 前提在结合 LDAP 和 Samba 时请确保已有 LDAP 服务器和 Samba 服务器。 LDAP 服务器配置参见LDAP 系列（1）：快速搭建 LDAP 服务器。假设LDAP 服务器参数如下：    参数 值     DN dc=hikscale,dc=com   IP地址 192.16">
+<meta property="og:description" content="本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-14T08:14:39.000Z">
+<meta property="og:updated_time" content="2018-12-14T08:16:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LDAP 系列（3）：Samba over LDAP">
-<meta name="twitter:description" content="本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。 前提在结合 LDAP 和 Samba 时请确保已有 LDAP 服务器和 Samba 服务器。 LDAP 服务器配置参见LDAP 系列（1）：快速搭建 LDAP 服务器。假设LDAP 服务器参数如下：    参数 值     DN dc=hikscale,dc=com   IP地址 192.16">
+<meta name="twitter:description" content="本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。">
 
 
 
@@ -311,6 +311,7 @@
 
       
         <p>本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。</p>
+<a id="more"></a>
 <h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><p>在结合 LDAP 和 Samba 时请确保已有 LDAP 服务器和 Samba 服务器。</p>
 <p>LDAP 服务器配置参见<a href="http://guleilab.com/2018/07/24/LDAP1/" target="_blank" rel="noopener">LDAP 系列（1）：快速搭建 LDAP 服务器</a>。假设LDAP 服务器参数如下：</p>
 <table>
