@@ -561,7 +561,103 @@
       
         
           
-            
+            <p>本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。</p>
+<h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><p>在结合 LDAP 和 Samba 时请确保已有 LDAP 服务器和 Samba 服务器。</p>
+<p>LDAP 服务器配置参见<a href="http://guleilab.com/2018/07/24/LDAP1/" target="_blank" rel="noopener">LDAP 系列（1）：快速搭建 LDAP 服务器</a>。假设LDAP 服务器参数如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数</th>
+<th style="text-align:center">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">DN</td>
+<td style="text-align:center">dc=hikscale,dc=com</td>
+</tr>
+<tr>
+<td style="text-align:center">IP地址</td>
+<td style="text-align:center">192.168.0.1</td>
+</tr>
+<tr>
+<td style="text-align:center">管理员CN</td>
+<td style="text-align:center">cn=Manager,dc=hikscale,dc=com</td>
+</tr>
+<tr>
+<td style="text-align:center">用户OU</td>
+<td style="text-align:center">ou=People,dc=hikscale,dc=com</td>
+</tr>
+<tr>
+<td style="text-align:center">用户组OU</td>
+<td style="text-align:center">ou=Group,dc=hikscale,dc=com</td>
+</tr>
+<tr>
+<td style="text-align:center">Samaba域名</td>
+<td style="text-align:center">HIKSCALE</td>
+</tr>
+</tbody>
+</table>
+<p>Samba 服务器配置请安装 samba 服务<code>yum install samba samba-client samba-common cifs-utils</code>。</p>
+<h1 id="配置-LDAP-服务器"><a href="#配置-LDAP-服务器" class="headerlink" title="配置 LDAP 服务器"></a>配置 LDAP 服务器</h1><p>我们只配置了三个基础模块。要将 Samba 和 LDAP 结合使用，需要向 LDAP 服务器增加 Samba 用户模板信息：</p>
+<ol>
+<li>将模板信息<code>samba.ldidf</code>拷贝到 LDAP 的schemas下。其中，<code>samba.ldif</code>位于 Samba 服务器的<code>/usr/share/doc/samba-x.x.x/LDAP/</code>路径下（x.x.x是 Samba 的版本号），LDAP 的schemas在<code>/etc/openldap/schemas</code>。</li>
+<li>在 LDAP 服务器执行命令<code>ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/samba.ldif</code>，将 Samba 模板加入 LDAP 服务器。</li>
+</ol>
+<h1 id="配置-Samba-服务器"><a href="#配置-Samba-服务器" class="headerlink" title="配置 Samba 服务器"></a>配置 Samba 服务器</h1><h2 id="修改-Samba-配置"><a href="#修改-Samba-配置" class="headerlink" title="修改 Samba 配置"></a>修改 Samba 配置</h2><p>添加修改<code>/etc/samba/smb.conf</code>中 global 字段中的以下参数：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数</th>
+<th style="text-align:center">格式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">workgroup</td>
+<td style="text-align:center">workgroup = &lt;samba域域名&gt;(大写)</td>
+</tr>
+<tr>
+<td style="text-align:center">passdb backend</td>
+<td style="text-align:center">passdb backend = ldapsam:ldap://&lt;ip地址&gt;:<port>(端口默认389)</port></td>
+</tr>
+<tr>
+<td style="text-align:center">ldap suffix</td>
+<td style="text-align:center">ldap suffix = <dn></dn></td>
+</tr>
+<tr>
+<td style="text-align:center">ldap user suffix</td>
+<td style="text-align:center">ldap user suffix = &lt;用户ou&gt;</td>
+</tr>
+<tr>
+<td style="text-align:center">ldap group suffix</td>
+<td style="text-align:center">ldap group suffix = &lt;用户组ou&gt;</td>
+</tr>
+<tr>
+<td style="text-align:center">ldap admin dn</td>
+<td style="text-align:center">ldap admin dn = &lt;管理员cn&gt;</td>
+</tr>
+<tr>
+<td style="text-align:center">ldap ssl</td>
+<td style="text-align:center">ldap ssl = start_tls/no</td>
+</tr>
+<tr>
+<td style="text-align:center">netbios name</td>
+<td style="text-align:center">netbios name = &lt;samba域域名&gt;</td>
+</tr>
+<tr>
+<td style="text-align:center">ldap passwd sync</td>
+<td style="text-align:center">ldap passwd sync = yes/no/only</td>
+</tr>
+</tbody>
+</table>
+<p>以本文为例，则新增配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">workgroup = HIKSCALE</span><br><span class="line">passdb backend = ldapsam:ldap://192.168.0.1:389</span><br><span class="line">ldap suffix = dc=hikscale,dc=com</span><br><span class="line">ldap user suffix = ou=People,dc=hikscale,dc=com</span><br><span class="line">ldap group suffix = ou=Group,dc=hikscale,dc=com</span><br><span class="line">ldap admin dn = cn=Manager,dc=hikscale,dc=com</span><br><span class="line">ldap ssl = no</span><br><span class="line">netbios name = hikscale</span><br><span class="line">ldap passwd sync = yes</span><br></pre></td></tr></table></figure>
+<h2 id="将-Samba-服务器配置成-LDAP-客户端"><a href="#将-Samba-服务器配置成-LDAP-客户端" class="headerlink" title="将 Samba 服务器配置成 LDAP 客户端"></a>将 Samba 服务器配置成 LDAP 客户端</h2><p>参见<a href="http://guleilab.com/2018/07/29/LDAP2/" target="_blank" rel="noopener">LDAP系列（2）：快速配置 LDAP 客户端</a>，采用<strong>手动配置</strong>，修改 PAM 配置时只需要修改<code>/etc/pam.d/password-auth</code>文件。</p>
+<h2 id="配置-LDAP-管理员密码"><a href="#配置-LDAP-管理员密码" class="headerlink" title="配置 LDAP 管理员密码"></a>配置 LDAP 管理员密码</h2><p>在 Samba 服务器执行命令<code>smbpasswd -w &lt;管理员cn的密码&gt;</code>。</p>
+<p>重启 Samba 服务<code>systemctl restart smb</code></p>
+<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>在 Samba 服务器使用命令<code>pdbedit -L</code>可以看到 Samba 用户。</p>
+
           
         
       
