@@ -83,16 +83,16 @@
 <meta name="keywords" content="LDAP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LDAP 系列（4）：安装 Web 管理界面">
-<meta property="og:url" content="http://yoursite.com/2018/12/14/LDAP4/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/07/30/LDAP4/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="LDAP 支持的 LDIF 格式简直反人类，再通过 ldapadd 等命令行工具去管理 LDAP内容实在是浪费生命。本章将介绍如何安装PhpLDAPAdmin，通过 Web 页面进行运维管理。">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/12/14/LDAP4/屏幕快照%202018-12-14%2017.00.07.png">
-<meta property="og:updated_time" content="2018-12-14T09:03:00.000Z">
+<meta property="og:image" content="http://yoursite.com/2018/07/30/LDAP4/屏幕快照%202018-12-14%2017.00.07.png">
+<meta property="og:updated_time" content="2018-12-14T09:04:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LDAP 系列（4）：安装 Web 管理界面">
 <meta name="twitter:description" content="LDAP 支持的 LDIF 格式简直反人类，再通过 ldapadd 等命令行工具去管理 LDAP内容实在是浪费生命。本章将介绍如何安装PhpLDAPAdmin，通过 Web 页面进行运维管理。">
-<meta name="twitter:image" content="http://yoursite.com/2018/12/14/LDAP4/屏幕快照%202018-12-14%2017.00.07.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/30/LDAP4/屏幕快照%202018-12-14%2017.00.07.png">
 
 
 
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/14/LDAP4/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/07/30/LDAP4/"/>
 
 
 
@@ -245,7 +245,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/14/LDAP4/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/30/LDAP4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Lei">
@@ -274,8 +274,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-14T16:18:04+08:00">
-                2018-12-14
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-30T16:18:04+08:00">
+                2018-07-30
               </time>
             
 
@@ -324,7 +324,7 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$servers-&gt;setValue(<span class="string">'login'</span>,<span class="string">'attr'</span>,<span class="string">'dn'</span>);</span><br><span class="line"><span class="comment">//$servers-&gt;setValue('login','attr','uid');</span></span><br></pre></td></tr></table></figure>
 <p>修改完成之后重启 httpd 服务<code>systemctl restart httpd</code>。</p>
 <h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>使用<code>http://&lt;ip&gt;/ldapadmin</code>登陆，界面如下：</p>
-<p><img src="/2018/12/14/LDAP4/屏幕快照 2018-12-14 17.00.07.png" alt="屏幕快照 2018-12-14 17.00.07"></p>
+<p><img src="/2018/07/30/LDAP4/屏幕快照 2018-12-14 17.00.07.png" alt="屏幕快照 2018-12-14 17.00.07"></p>
 <p>登陆时账户名，使用<strong>管理员CN</strong>，密码使用管理员密码。</p>
 
       
@@ -356,8 +356,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/19/reliable-file-updates-with-python/" rel="next" title="使用 Python 进行可靠的文件 IO">
-                <i class="fa fa-chevron-left"></i> 使用 Python 进行可靠的文件 IO
+              <a href="/2018/07/29/LDAP3/" rel="next" title="LDAP 系列（3）：Samba over LDAP">
+                <i class="fa fa-chevron-left"></i> LDAP 系列（3）：Samba over LDAP
               </a>
             
           </div>
@@ -365,6 +365,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/09/ftp/" rel="prev" title="FTP服务器搭建和配置">
+                FTP服务器搭建和配置 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
