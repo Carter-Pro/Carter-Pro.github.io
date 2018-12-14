@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Linux FTP," />
+  <meta name="keywords" content="LDAP," />
 
 
 
@@ -79,18 +79,20 @@
 
 
 
-<meta name="description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并根据需求进行用户权限配置。">
-<meta name="keywords" content="Linux FTP">
+<meta name="description" content="LDAP 支持的 LDIF 格式简直反人类，再通过 ldapadd 等命令行工具去管理 LDAP内容实在是浪费生命。本章将介绍如何安装PhpLDAPAdmin，通过 Web 页面进行运维管理。">
+<meta name="keywords" content="LDAP">
 <meta property="og:type" content="article">
-<meta property="og:title" content="FTP服务器搭建和配置">
-<meta property="og:url" content="http://yoursite.com/2018/09/09/ftp/index.html">
+<meta property="og:title" content="LDAP 系列（4）：安装 Web 管理界面">
+<meta property="og:url" content="http://yoursite.com/2018/12/14/LDAP4/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并根据需求进行用户权限配置。">
+<meta property="og:description" content="LDAP 支持的 LDIF 格式简直反人类，再通过 ldapadd 等命令行工具去管理 LDAP内容实在是浪费生命。本章将介绍如何安装PhpLDAPAdmin，通过 Web 页面进行运维管理。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-17T12:50:57.000Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/14/LDAP4/屏幕快照%202018-12-14%2017.00.07.png">
+<meta property="og:updated_time" content="2018-12-14T09:03:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="FTP服务器搭建和配置">
-<meta name="twitter:description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并根据需求进行用户权限配置。">
+<meta name="twitter:title" content="LDAP 系列（4）：安装 Web 管理界面">
+<meta name="twitter:description" content="LDAP 支持的 LDIF 格式简直反人类，再通过 ldapadd 等命令行工具去管理 LDAP内容实在是浪费生命。本章将介绍如何安装PhpLDAPAdmin，通过 Web 页面进行运维管理。">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/14/LDAP4/屏幕快照%202018-12-14%2017.00.07.png">
 
 
 
@@ -120,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/09/09/ftp/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/12/14/LDAP4/"/>
 
 
 
 
 
-  <title>FTP服务器搭建和配置 | GuLei's Lab</title>
+  <title>LDAP 系列（4）：安装 Web 管理界面 | GuLei's Lab</title>
   
 
 
@@ -243,7 +245,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/09/ftp/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/14/LDAP4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Lei">
@@ -260,7 +262,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">FTP服务器搭建和配置</h1>
+          <h1 class="post-title" itemprop="name headline">LDAP 系列（4）：安装 Web 管理界面</h1>
         
 
         <div class="post-meta">
@@ -272,8 +274,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-09T08:42:48+08:00">
-                2018-09-09
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-14T16:18:04+08:00">
+                2018-12-14
               </time>
             
 
@@ -310,60 +312,20 @@
       
 
       
-        <p>在 CentOS 7.x 上使用搭建 FTP 服务器，并根据需求进行用户权限配置。</p>
+        <p>LDAP 支持的 LDIF 格式简直反人类，再通过 ldapadd 等命令行工具去管理 LDAP内容实在是浪费生命。本章将介绍如何安装PhpLDAPAdmin，通过 Web 页面进行运维管理。</p>
 <a id="more"></a>
-<h1 id="搭建-FTP-服务器"><a href="#搭建-FTP-服务器" class="headerlink" title="搭建 FTP 服务器"></a>搭建 FTP 服务器</h1><p>vsftpd 安全、配置简单、性能较好，本文章使用 vsftpd 搭建 ftp 服务器。</p>
-<h2 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h2><p>CentOS 发行版自带 vsftpd，安装起来很简单：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y vsftpd</span><br></pre></td></tr></table></figure>
-<h2 id="全局配置"><a href="#全局配置" class="headerlink" title="全局配置"></a>全局配置</h2><p>编辑 vsftpd 配置文件<code>/etc/vsftpd/vsftp.conf</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">日志配置</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">chroot list</span></span><br><span class="line">chroot_local_user=YES</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">chroot_list_file=/etc/vsftpd/chroot_list</span><br><span class="line"><span class="meta">#</span><span class="bash">白名单</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">端口配置</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">网络模式 ipv4/ipv6</span></span><br><span class="line">listen=YES</span><br><span class="line">listen_ipv6=NO</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">匿名用户配置</span></span><br></pre></td></tr></table></figure>
-<h1 id="匿名用户配置"><a href="#匿名用户配置" class="headerlink" title="匿名用户配置"></a>匿名用户配置</h1><p>同样在 vsftpd 的全局配置文件<code>/etc/vsftpd/vsftod.conf</code>里编辑。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="虚拟用户配置"><a href="#虚拟用户配置" class="headerlink" title="虚拟用户配置"></a>虚拟用户配置</h1><p> vsftpd 的一大特色是虚拟用户，虚拟用户可以屏蔽本地文件系统的权限对 FTP 用户权限的影响。</p>
-<h2 id="生成虚拟用户数据库"><a href="#生成虚拟用户数据库" class="headerlink" title="生成虚拟用户数据库"></a>生成虚拟用户数据库</h2><p>用户文件<code>/etc/vsftpd/vusers</code>，形式为用户名、密码各一行，如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> user1</span></span><br><span class="line">ftpuser1</span><br><span class="line">123456</span><br><span class="line"><span class="meta">#</span><span class="bash"> user2</span></span><br><span class="line">ftpuser2</span><br><span class="line">123456</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>用户数据库<code>/etc/vsftpd/vusers.db</code>，使用如下命令生成：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db_load -T -t hash -f /etc/vsftpd/vusers /etc/vsftpd/vusers.db</span><br></pre></td></tr></table></figure>
-<h2 id="使用虚拟用户数据库"><a href="#使用虚拟用户数据库" class="headerlink" title="使用虚拟用户数据库"></a>使用虚拟用户数据库</h2><p>使用虚拟用户数据库需要结合 PAM，可以直接编辑 vsftpd 的 PAM 文件<code>/etc/pam.d/vsftpd</code>或新建一个 PAM 配置文件。PAM 文件配置如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auth required pam_userdb.so db=/etc/vsftpd/vusers</span><br><span class="line">account required pam_userdb.so db=/etc/vsftpd/vusers</span><br></pre></td></tr></table></figure>
-<p>如果使用新建 PAM 配置文件，需要在全局配置文件中修改如下行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="虚拟用户权限"><a href="#虚拟用户权限" class="headerlink" title="虚拟用户权限"></a>虚拟用户权限</h2><p>虚拟用户一些通用配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>虚拟用户权限和配置如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">权限</th>
-<th style="text-align:center">配置</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">读取文件列表</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">创建文件夹</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">删除文件/文件夹</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">上传</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">下载</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">带宽</td>
-</tr>
-</tbody>
-</table>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>CentOS 7.x 原始镜像里没有<strong>PhpLDAPAdmin</strong>的软件包，所以要安装EPEL仓库，详见<a href="https://fedoraproject.org/wiki/EPEL" target="_blank" rel="noopener">epel wiki</a>。</p>
+<p>安装好之后，直接使用命令安装PhpLDAPAdmin：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y phpldapadmin</span><br></pre></td></tr></table></figure>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><h2 id="可选：修改-httpd-配置"><a href="#可选：修改-httpd-配置" class="headerlink" title="可选：修改 httpd 配置"></a>可选：修改 httpd 配置</h2><p>phpldapadmin 默认使用 httpd 服务，其配置文件为<code>/etc/httpd/conf.d/phpldapadmin.conf</code>，可以通过修改该文件控制访问。具体参见 httpd 的相关文档。</p>
+<h2 id="配置PhpLDAPAdmin"><a href="#配置PhpLDAPAdmin" class="headerlink" title="配置PhpLDAPAdmin"></a>配置PhpLDAPAdmin</h2><p>修改PhpLDAPAdmin配置文件<code>/etc/phpldapadmin/config.php</code>，找到如下内容：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//$servers-&gt;setValue('login','attr','dn');</span></span><br><span class="line">$servers-&gt;setValue(<span class="string">'login'</span>,<span class="string">'attr'</span>,<span class="string">'uid'</span>);</span><br></pre></td></tr></table></figure>
+<p>修改为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$servers-&gt;setValue(<span class="string">'login'</span>,<span class="string">'attr'</span>,<span class="string">'dn'</span>);</span><br><span class="line"><span class="comment">//$servers-&gt;setValue('login','attr','uid');</span></span><br></pre></td></tr></table></figure>
+<p>修改完成之后重启 httpd 服务<code>systemctl restart httpd</code>。</p>
+<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>使用<code>http://&lt;ip&gt;/ldapadmin</code>登陆，界面如下：</p>
+<p><img src="/2018/12/14/LDAP4/屏幕快照 2018-12-14 17.00.07.png" alt="屏幕快照 2018-12-14 17.00.07"></p>
+<p>登陆时账户名，使用<strong>管理员CN</strong>，密码使用管理员密码。</p>
 
       
     </div>
@@ -381,7 +343,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux-FTP/" rel="tag"># Linux FTP</a>
+            <a href="/tags/LDAP/" rel="tag"># LDAP</a>
           
         </div>
       
@@ -394,8 +356,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/29/LDAP3/" rel="next" title="LDAP 系列（3）：Samba over LDAP">
-                <i class="fa fa-chevron-left"></i> LDAP 系列（3）：Samba over LDAP
+              <a href="/2018/10/19/reliable-file-updates-with-python/" rel="next" title="使用 Python 进行可靠的文件 IO">
+                <i class="fa fa-chevron-left"></i> 使用 Python 进行可靠的文件 IO
               </a>
             
           </div>
@@ -403,10 +365,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/19/reliable-file-updates-with-python/" rel="prev" title="使用 Python 进行可靠的文件 IO">
-                使用 Python 进行可靠的文件 IO <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -542,7 +500,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#搭建-FTP-服务器"><span class="nav-number">1.</span> <span class="nav-text">搭建 FTP 服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装软件"><span class="nav-number">1.1.</span> <span class="nav-text">安装软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局配置"><span class="nav-number">1.2.</span> <span class="nav-text">全局配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#匿名用户配置"><span class="nav-number">2.</span> <span class="nav-text">匿名用户配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟用户配置"><span class="nav-number">3.</span> <span class="nav-text">虚拟用户配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#生成虚拟用户数据库"><span class="nav-number">3.1.</span> <span class="nav-text">生成虚拟用户数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用虚拟用户数据库"><span class="nav-number">3.2.</span> <span class="nav-text">使用虚拟用户数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟用户权限"><span class="nav-number">3.3.</span> <span class="nav-text">虚拟用户权限</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#可选：修改-httpd-配置"><span class="nav-number">2.1.</span> <span class="nav-text">可选：修改 httpd 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置PhpLDAPAdmin"><span class="nav-number">2.2.</span> <span class="nav-text">配置PhpLDAPAdmin</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#验证"><span class="nav-number">3.</span> <span class="nav-text">验证</span></a></li></ol></div>
             
 
           </div>
