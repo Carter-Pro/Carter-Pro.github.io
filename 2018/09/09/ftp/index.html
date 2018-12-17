@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并根据需求进行用户权限配置。">
+<meta name="description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并使用虚拟用户进行细粒度的用户权限配置。">
 <meta name="keywords" content="Linux FTP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FTP服务器搭建和配置">
 <meta property="og:url" content="http://yoursite.com/2018/09/09/ftp/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并根据需求进行用户权限配置。">
+<meta property="og:description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并使用虚拟用户进行细粒度的用户权限配置。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-17T12:50:57.000Z">
+<meta property="og:updated_time" content="2018-12-17T02:01:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FTP服务器搭建和配置">
-<meta name="twitter:description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并根据需求进行用户权限配置。">
+<meta name="twitter:description" content="在 CentOS 7.x 上使用搭建 FTP 服务器，并使用虚拟用户进行细粒度的用户权限配置。">
 
 
 
@@ -310,60 +310,77 @@
       
 
       
-        <p>在 CentOS 7.x 上使用搭建 FTP 服务器，并根据需求进行用户权限配置。</p>
+        <p>在 CentOS 7.x 上使用搭建 FTP 服务器，并使用虚拟用户进行细粒度的用户权限配置。</p>
 <a id="more"></a>
-<h1 id="搭建-FTP-服务器"><a href="#搭建-FTP-服务器" class="headerlink" title="搭建 FTP 服务器"></a>搭建 FTP 服务器</h1><p>vsftpd 安全、配置简单、性能较好，本文章使用 vsftpd 搭建 ftp 服务器。</p>
+<h1 id="搭建-FTP-服务器"><a href="#搭建-FTP-服务器" class="headerlink" title="搭建 FTP 服务器"></a>搭建 FTP 服务器</h1><p>vsftpd 安全、配置简单、性能较好，本文使用 vsftpd 搭建 ftp 服务器。</p>
 <h2 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h2><p>CentOS 发行版自带 vsftpd，安装起来很简单：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y vsftpd</span><br></pre></td></tr></table></figure>
-<h2 id="全局配置"><a href="#全局配置" class="headerlink" title="全局配置"></a>全局配置</h2><p>编辑 vsftpd 配置文件<code>/etc/vsftpd/vsftp.conf</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">日志配置</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">chroot list</span></span><br><span class="line">chroot_local_user=YES</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">chroot_list_file=/etc/vsftpd/chroot_list</span><br><span class="line"><span class="meta">#</span><span class="bash">白名单</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">端口配置</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">网络模式 ipv4/ipv6</span></span><br><span class="line">listen=YES</span><br><span class="line">listen_ipv6=NO</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">匿名用户配置</span></span><br></pre></td></tr></table></figure>
-<h1 id="匿名用户配置"><a href="#匿名用户配置" class="headerlink" title="匿名用户配置"></a>匿名用户配置</h1><p>同样在 vsftpd 的全局配置文件<code>/etc/vsftpd/vsftod.conf</code>里编辑。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="虚拟用户配置"><a href="#虚拟用户配置" class="headerlink" title="虚拟用户配置"></a>虚拟用户配置</h1><p> vsftpd 的一大特色是虚拟用户，虚拟用户可以屏蔽本地文件系统的权限对 FTP 用户权限的影响。</p>
+<p>使用如下命令可以启动、重启 vsftpd 服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动服务</span></span><br><span class="line">systemctl start vsftpd</span><br><span class="line"><span class="meta">#</span><span class="bash"> 重启服务</span></span><br><span class="line">systemctl restart vsftpd</span><br></pre></td></tr></table></figure>
+<h2 id="全局配置"><a href="#全局配置" class="headerlink" title="全局配置"></a>全局配置</h2><p>vsftpd 的参数含义可以参考 vsftpd 的<a href="https://security.appspot.com/vsftpd/vsftpd_conf.html" target="_blank" rel="noopener">官方文档</a>。</p>
+<p>编辑 vsftpd 配置文件<code>/etc/vsftpd/vsftp.conf</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 通用配置</span></span><br><span class="line">local_enable=YES # 使用非匿名用户登陆必须设置(包括匿名用户)</span><br><span class="line">write_enable=YES # 是否允许对共享文件系统做出修改的指令集</span><br><span class="line">local_umask=022 # 设置目录权限，值为对777进行按位减(本设置值为755)</span><br><span class="line">ls_recurse_enable=NO # 是否允许 ls -R，启用有安全风险</span><br><span class="line">pam_service_name=vsftpd # 使用的 pam 配置文件名，位于/etc/pam.d 目录下</span><br><span class="line">trans_chunk_size=8192 # 越大性能越好，越小限流功能越平滑</span><br><span class="line"><span class="meta">#</span><span class="bash">日志、消息提示配置</span></span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">log_ftp_protocol=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">xferlog_std_format=NO</span><br><span class="line">xferlog_file=/var/log/vsftpd.log</span><br><span class="line"><span class="meta">#</span><span class="bash">chroot list</span></span><br><span class="line">chroot_local_user=YES # 是否将所有用户限制在主目录</span><br><span class="line">chroot_list_enable=NO # 是否启动限制用户的名单</span><br><span class="line"><span class="meta">#</span><span class="bash">白名单</span></span><br><span class="line">userlist_enable=YES # 启动白名单，允许访问的用户写在userlist_file 里</span><br><span class="line">userlist_deny=NO</span><br><span class="line">userlist_file=/etc/vsftpd/user_list</span><br><span class="line"><span class="meta">#</span><span class="bash">端口配置</span></span><br><span class="line">pasv_enable=YES # 使用被动模式</span><br><span class="line">pasv_min_port=5000</span><br><span class="line">pasv_max_port=6000</span><br><span class="line"><span class="meta">#</span><span class="bash">网络配置</span></span><br><span class="line">listen=YES # ipv4</span><br><span class="line">listen_ipv6=NO # ipv6</span><br><span class="line">tcp_wrappers=YES</span><br></pre></td></tr></table></figure>
+<p>如果使用本地认证用户登陆，则可以在白名单中加入该用户，修改完配置重启服务即可。</p>
+<h1 id="匿名用户配置"><a href="#匿名用户配置" class="headerlink" title="匿名用户配置"></a>匿名用户配置</h1><p>同样在 vsftpd 的全局配置文件<code>/etc/vsftpd/vsftod.conf</code>里编辑，增加如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">anonymous_enable=YES # 启用匿名用户，默认名 anonymous</span><br><span class="line">anon_world_readable_only=NO # 允许匿名用户写</span><br><span class="line">anon_root=/path/to/dir # 设置匿名用户的 homedir</span><br></pre></td></tr></table></figure>
+<p>修改完配置重启服务，即可使用匿名用户登陆。</p>
+<h1 id="虚拟用户配置"><a href="#虚拟用户配置" class="headerlink" title="虚拟用户配置"></a>虚拟用户配置</h1><p> vsftpd 的一大特色是虚拟用户。虚拟用户是在真实的本地用户上抽象的一层用户管理系统。虚拟用户可以屏蔽本地文件系统的权限对 FTP 用户权限的影响。</p>
+<h2 id="修改全局配置"><a href="#修改全局配置" class="headerlink" title="修改全局配置"></a>修改全局配置</h2><p>修改 vsftpd 的全局配置文件<code>/etc/vsftpd/vsftod.conf</code>，增加如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">guest_enable=YES</span><br><span class="line">guest_username=root # 启动用户映射，且所有登陆的用户均映射成 root</span><br><span class="line">local_root=/path/to/dir</span><br><span class="line">user_config_dir=/etc/vsftpd/conf.d # 所有虚拟用户的配置文件都放在该目录下</span><br></pre></td></tr></table></figure>
 <h2 id="生成虚拟用户数据库"><a href="#生成虚拟用户数据库" class="headerlink" title="生成虚拟用户数据库"></a>生成虚拟用户数据库</h2><p>用户文件<code>/etc/vsftpd/vusers</code>，形式为用户名、密码各一行，如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> user1</span></span><br><span class="line">ftpuser1</span><br><span class="line">123456</span><br><span class="line"><span class="meta">#</span><span class="bash"> user2</span></span><br><span class="line">ftpuser2</span><br><span class="line">123456</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>用户数据库<code>/etc/vsftpd/vusers.db</code>，使用如下命令生成：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db_load -T -t hash -f /etc/vsftpd/vusers /etc/vsftpd/vusers.db</span><br></pre></td></tr></table></figure>
 <h2 id="使用虚拟用户数据库"><a href="#使用虚拟用户数据库" class="headerlink" title="使用虚拟用户数据库"></a>使用虚拟用户数据库</h2><p>使用虚拟用户数据库需要结合 PAM，可以直接编辑 vsftpd 的 PAM 文件<code>/etc/pam.d/vsftpd</code>或新建一个 PAM 配置文件。PAM 文件配置如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auth required pam_userdb.so db=/etc/vsftpd/vusers</span><br><span class="line">account required pam_userdb.so db=/etc/vsftpd/vusers</span><br></pre></td></tr></table></figure>
-<p>如果使用新建 PAM 配置文件，需要在全局配置文件中修改如下行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="虚拟用户权限"><a href="#虚拟用户权限" class="headerlink" title="虚拟用户权限"></a>虚拟用户权限</h2><p>虚拟用户一些通用配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如果使用新建 PAM 配置文件，需要在全局配置文件中修改参数<code>pam_service_name</code>。</p>
+<h2 id="虚拟用户配置-1"><a href="#虚拟用户配置-1" class="headerlink" title="虚拟用户配置"></a>虚拟用户配置</h2><h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>创建一个虚拟用户需要在虚拟用户配置目录(参考<code>user_config_dir</code>的值)下创建一个与用户名同名的参考文件。例如，创建一个名为<code>ftptest</code>的虚拟用户，其配置文件为<code>/&lt;user_config_dir&gt;/ftptest</code>。</p>
+<h3 id="通用配置"><a href="#通用配置" class="headerlink" title="通用配置"></a>通用配置</h3><p>虚拟用户一些通用配置如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">anon_umask=022</span><br><span class="line">virtual_use_local_privs=NO # 将虚拟用户权限等级设定和匿名用户一样，提高安全性</span><br><span class="line">anon_world_readable_only=NO # 虚拟用户可写(并非设置为写)</span><br><span class="line">local_root=/path/to/dir # 设置虚拟用户的 homedir</span><br></pre></td></tr></table></figure>
+<h3 id="权限配置"><a href="#权限配置" class="headerlink" title="权限配置"></a>权限配置</h3><p>在通用配置的基础上，可以添加权限相关配置来进行虚拟用户权限控制。</p>
 <p>虚拟用户权限和配置如下表所示：</p>
 <table>
 <thead>
 <tr>
 <th style="text-align:center">权限</th>
-<th style="text-align:center">配置</th>
+<th style="text-align:center">参数</th>
+<th style="text-align:center">默认值</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:center">读取文件列表</td>
-<td style="text-align:center"></td>
+<td style="text-align:center">dirlist_enable</td>
+<td style="text-align:center">YES</td>
 </tr>
 <tr>
 <td style="text-align:center">创建文件夹</td>
-<td style="text-align:center"></td>
+<td style="text-align:center">anon_mkdir_write_enable</td>
+<td style="text-align:center">NO</td>
 </tr>
 <tr>
 <td style="text-align:center">删除文件/文件夹</td>
-<td style="text-align:center"></td>
+<td style="text-align:center">anon_other_write_enable</td>
+<td style="text-align:center">NO</td>
 </tr>
 <tr>
 <td style="text-align:center">上传</td>
-<td style="text-align:center"></td>
+<td style="text-align:center">anon_upload_enable</td>
+<td style="text-align:center">NO</td>
 </tr>
 <tr>
 <td style="text-align:center">下载</td>
-<td style="text-align:center"></td>
+<td style="text-align:center">download_enable</td>
+<td style="text-align:center">YES</td>
 </tr>
 <tr>
 <td style="text-align:center">带宽</td>
+<td style="text-align:center">anon_max_rate</td>
+<td style="text-align:center">0 (unlimited)</td>
 </tr>
 </tbody>
 </table>
+<h1 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h1><p>除了以上配置添加了白名单之外， vsftpd 还有一个自带的黑名单文件<code>/etc/vsftpd/ftpusers</code>，里面的用户均被禁止登陆 vsftp。</p>
 
       
     </div>
@@ -542,7 +559,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#搭建-FTP-服务器"><span class="nav-number">1.</span> <span class="nav-text">搭建 FTP 服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装软件"><span class="nav-number">1.1.</span> <span class="nav-text">安装软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局配置"><span class="nav-number">1.2.</span> <span class="nav-text">全局配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#匿名用户配置"><span class="nav-number">2.</span> <span class="nav-text">匿名用户配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟用户配置"><span class="nav-number">3.</span> <span class="nav-text">虚拟用户配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#生成虚拟用户数据库"><span class="nav-number">3.1.</span> <span class="nav-text">生成虚拟用户数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用虚拟用户数据库"><span class="nav-number">3.2.</span> <span class="nav-text">使用虚拟用户数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟用户权限"><span class="nav-number">3.3.</span> <span class="nav-text">虚拟用户权限</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#搭建-FTP-服务器"><span class="nav-number">1.</span> <span class="nav-text">搭建 FTP 服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装软件"><span class="nav-number">1.1.</span> <span class="nav-text">安装软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局配置"><span class="nav-number">1.2.</span> <span class="nav-text">全局配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#匿名用户配置"><span class="nav-number">2.</span> <span class="nav-text">匿名用户配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟用户配置"><span class="nav-number">3.</span> <span class="nav-text">虚拟用户配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改全局配置"><span class="nav-number">3.1.</span> <span class="nav-text">修改全局配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成虚拟用户数据库"><span class="nav-number">3.2.</span> <span class="nav-text">生成虚拟用户数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用虚拟用户数据库"><span class="nav-number">3.3.</span> <span class="nav-text">使用虚拟用户数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟用户配置-1"><span class="nav-number">3.4.</span> <span class="nav-text">虚拟用户配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件"><span class="nav-number">3.4.1.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用配置"><span class="nav-number">3.4.2.</span> <span class="nav-text">通用配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权限配置"><span class="nav-number">3.4.3.</span> <span class="nav-text">权限配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备注"><span class="nav-number">4.</span> <span class="nav-text">备注</span></a></li></ol></div>
             
 
           </div>
