@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://yoursite.com/2018/10/19/reliable-file-updates-with-python/</loc>
-    <lastmod>2018-12-17T02:03:03.000Z</lastmod>
+    <loc>http://yoursite.com/2016/04/05/VPS/</loc>
+    <lastmod>2018-12-19T03:28:19.000Z</lastmod>
   </url>  <url>
-    <loc>http://yoursite.com/2018/09/09/ftp/</loc>
-    <lastmod>2018-12-17T02:01:10.000Z</lastmod>
+    <loc>http://yoursite.com/2018/10/19/reliable-file-updates-with-python/</loc>
+    <lastmod>2018-12-19T03:28:01.000Z</lastmod>
+  </url>  <url>
+    <loc>http://yoursite.com/2016/05/05/OrgPomodoroNotifier/</loc>
+    <lastmod>2018-12-19T03:26:29.000Z</lastmod>
+  </url>  <url>
+    <loc>http://yoursite.com/2016/02/24/OpenInSafari/</loc>
+    <lastmod>2018-12-19T03:26:16.000Z</lastmod>
+  </url>  <url>
+    <loc>http://yoursite.com/2016/03/25/Learn-elisp-in-15-minutes/</loc>
+    <lastmod>2018-12-19T03:25:29.000Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/07/30/LDAP4/</loc>
-    <lastmod>2018-12-14T09:04:15.000Z</lastmod>
+    <lastmod>2018-12-19T03:25:02.000Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/07/29/LDAP3/</loc>
-    <lastmod>2018-12-14T08:16:48.000Z</lastmod>
+    <lastmod>2018-12-19T03:24:53.000Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/07/29/LDAP2/</loc>
-    <lastmod>2018-12-14T08:16:18.000Z</lastmod>
+    <lastmod>2018-12-19T03:24:43.000Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/07/24/LDAP1/</loc>
-    <lastmod>2018-07-29T05:46:23.000Z</lastmod>
+    <lastmod>2018-12-19T03:24:28.000Z</lastmod>
+  </url>  <url>
+    <loc>http://yoursite.com/2018/09/09/ftp/</loc>
+    <lastmod>2018-12-19T03:24:16.000Z</lastmod>
+  </url>  <url>
+    <loc>http://yoursite.com/2015/12/31/config-c-c-layer-for-in-spacemacs/</loc>
+    <lastmod>2018-12-19T03:24:09.000Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/07/23/linux-multiIP-on-singel-inetface/</loc>
     <lastmod>2018-07-23T11:36:56.000Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2016/02/27/ModAndRem/</loc>
     <lastmod>2018-06-29T15:54:13.000Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2016/02/24/OpenInSafari/</loc>
-    <lastmod>2018-06-29T15:52:37.000Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2016/05/05/OrgPomodoroNotifier/</loc>
-    <lastmod>2018-06-29T15:52:08.000Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2016/04/05/VPS/</loc>
-    <lastmod>2018-06-29T15:51:32.000Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2015/12/31/config-c-c-layer-for-in-spacemacs/</loc>
-    <lastmod>2016-05-01T14:42:26.000Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2016/02/05/Pointer/</loc>
-    <lastmod>2016-04-24T14:24:41.000Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2016/03/25/Learn-elisp-in-15-minutes/</loc>
-    <lastmod>2016-04-24T14:24:41.000Z</lastmod>
   </url>
 </urlset>
