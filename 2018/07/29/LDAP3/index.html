@@ -82,7 +82,7 @@
 <meta name="description" content="本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LDAP 系列（3）：Samba over LDAP">
-<meta property="og:url" content="http://yoursite.com/2018/07/29/LDAP3/index.html">
+<meta property="og:url" content="http://guleilab.com/2018/07/29/LDAP3/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。">
 <meta property="og:locale" content="zh-Hans">
@@ -119,7 +119,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/07/29/LDAP3/"/>
+  <link rel="canonical" href="http://guleilab.com/2018/07/29/LDAP3/"/>
 
 
 
@@ -271,7 +271,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/29/LDAP3/">
+    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2018/07/29/LDAP3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Lei">
@@ -374,7 +374,7 @@
         <p>本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。</p>
 <a id="more"></a>
 <h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><p>在结合 LDAP 和 Samba 时请确保已有 LDAP 服务器和 Samba 服务器。</p>
-<p>LDAP 服务器配置参见<a href="http://guleilab.com/2018/07/24/LDAP1/" target="_blank" rel="noopener">LDAP 系列（1）：快速搭建 LDAP 服务器</a>。假设LDAP 服务器参数如下：</p>
+<p>LDAP 服务器配置参见<a href="http://guleilab.com/2018/07/24/LDAP1/">LDAP 系列（1）：快速搭建 LDAP 服务器</a>。假设LDAP 服务器参数如下：</p>
 <table>
 <thead>
 <tr>
@@ -464,7 +464,7 @@
 </table>
 <p>以本文为例，则新增配置如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">workgroup = HIKSCALE</span><br><span class="line">passdb backend = ldapsam:ldap://192.168.0.1:389</span><br><span class="line">ldap suffix = dc=hikscale,dc=com</span><br><span class="line">ldap user suffix = ou=People,dc=hikscale,dc=com</span><br><span class="line">ldap group suffix = ou=Group,dc=hikscale,dc=com</span><br><span class="line">ldap admin dn = cn=Manager,dc=hikscale,dc=com</span><br><span class="line">ldap ssl = no</span><br><span class="line">netbios name = hikscale</span><br><span class="line">ldap passwd sync = yes</span><br></pre></td></tr></table></figure>
-<h2 id="将-Samba-服务器配置成-LDAP-客户端"><a href="#将-Samba-服务器配置成-LDAP-客户端" class="headerlink" title="将 Samba 服务器配置成 LDAP 客户端"></a>将 Samba 服务器配置成 LDAP 客户端</h2><p>参见<a href="http://guleilab.com/2018/07/29/LDAP2/" target="_blank" rel="noopener">LDAP系列（2）：快速配置 LDAP 客户端</a>，采用<strong>手动配置</strong>，修改 PAM 配置时只需要修改<code>/etc/pam.d/password-auth</code>文件。</p>
+<h2 id="将-Samba-服务器配置成-LDAP-客户端"><a href="#将-Samba-服务器配置成-LDAP-客户端" class="headerlink" title="将 Samba 服务器配置成 LDAP 客户端"></a>将 Samba 服务器配置成 LDAP 客户端</h2><p>参见<a href="http://guleilab.com/2018/07/29/LDAP2/">LDAP系列（2）：快速配置 LDAP 客户端</a>，采用<strong>手动配置</strong>，修改 PAM 配置时只需要修改<code>/etc/pam.d/password-auth</code>文件。</p>
 <h2 id="配置-LDAP-管理员密码"><a href="#配置-LDAP-管理员密码" class="headerlink" title="配置 LDAP 管理员密码"></a>配置 LDAP 管理员密码</h2><p>在 Samba 服务器执行命令<code>smbpasswd -w &lt;管理员cn的密码&gt;</code>。</p>
 <p>重启 Samba 服务<code>systemctl restart smb</code></p>
 <h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>在 Samba 服务器使用命令<code>pdbedit -L</code>可以看到 Samba 用户。</p>
