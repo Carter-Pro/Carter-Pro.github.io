@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="LDAP (Lightweight Directory Access Protocol) 是轻型目录访问协议，以目录形式存储信息（基于目录的数据库），具有良好的读性能。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-19T03:24:28.000Z">
+<meta property="og:updated_time" content="2018-12-19T13:50:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LDAP系列（1）：快速搭建 LDAP 服务器">
 <meta name="twitter:description" content="LDAP (Lightweight Directory Access Protocol) 是轻型目录访问协议，以目录形式存储信息（基于目录的数据库），具有良好的读性能。">
@@ -384,7 +384,7 @@
 <h1 id="部署-LDAP-服务器"><a href="#部署-LDAP-服务器" class="headerlink" title="部署 LDAP 服务器"></a>部署 LDAP 服务器</h1><h2 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h2><p>安装openldap与相关的软件包：</p>
  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y openldap openldap-clients openldap-servers migrationtools</span><br></pre></td></tr></table></figure>
 <h2 id="启动-LDAP"><a href="#启动-LDAP" class="headerlink" title="启动 LDAP"></a>启动 LDAP</h2><h3 id="生成秘钥"><a href="#生成秘钥" class="headerlink" title="生成秘钥"></a>生成秘钥</h3><p>记下生成的值，在后面配置的时候要用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slappasswd -s hikscale</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slappasswd -s &lt;password&gt;</span><br></pre></td></tr></table></figure>
 <p>生成类似<strong>{SSHA}v/GJvGG8SbIuCxhfTDVhkmWEuz2afNIR</strong>的秘钥。</p>
 <h3 id="复制配置模板"><a href="#复制配置模板" class="headerlink" title="复制配置模板"></a>复制配置模板</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG</span><br></pre></td></tr></table></figure>
 <h3 id="生成数据库文件"><a href="#生成数据库文件" class="headerlink" title="生成数据库文件"></a>生成数据库文件</h3><p>使用如下命令生成数据库文件，不必担心报错信息。</p>
