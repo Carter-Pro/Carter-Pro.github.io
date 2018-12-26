@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="LDAP (Lightweight Directory Access Protocol) 是轻型目录访问协议，以目录形式存储信息（基于目录的数据库），具有良好的读性能。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-19T13:50:02.000Z">
+<meta property="og:updated_time" content="2018-12-26T03:25:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LDAP系列（1）：快速搭建 LDAP 服务器">
 <meta name="twitter:description" content="LDAP (Lightweight Directory Access Protocol) 是轻型目录访问协议，以目录形式存储信息（基于目录的数据库），具有良好的读性能。">
@@ -439,7 +439,7 @@
 <p>修改证书的所属与私有证书的权限：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chown ldap:ldap /etc/openldap/certs/*</span><br><span class="line">chmod 600 /etc/openldap/certs/priv.pem</span><br></pre></td></tr></table></figure>
 <h2 id="配置服务器配置"><a href="#配置服务器配置" class="headerlink" title="配置服务器配置"></a>配置服务器配置</h2><p>编辑<code>/etc/sysconfig/slapd</code>，加入以下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SLAPD_URLS=&quot;ldapi:/// ldap:/// ldaps:///&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SLAPD_URLS=&quot;ldapi:/// ldap:/// ldaps:///&quot;</span><br><span class="line">SLAPD_LDAPS=yes</span><br></pre></td></tr></table></figure>
 <p>创建<code>/etc/openldap/pem.ldif</code>文件，并将下面的信息复制进去：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">dn: cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">replace: olcTLSCertificateFile</span><br><span class="line">olcTLSCertificateFile: /etc/openldap/certs/cert.pem</span><br><span class="line"></span><br><span class="line">dn: cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">replace: olcTLSCertificateKeyFile</span><br><span class="line">olcTLSCertificateKeyFile: /etc/openldap/certs/priv.pem</span><br></pre></td></tr></table></figure>
 <p>将新的配置文件更新到slapd服务程序：</p>
