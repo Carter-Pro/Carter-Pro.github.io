@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Linux," />
 
 
 
@@ -79,20 +79,18 @@
 
 
 
-<meta name="description" content="通过脚本使用快捷键在Safari中打开Chrome的当前网页">
+<meta name="description" content="在有 IO 时调试 NFS，systemd-journald提示Missed kernel message信息，是由于同一时间日志输出太多导致的日志丢失。本文章将介绍如何调整系统日志限制。">
+<meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="在Safari中打开Chrome的当前页">
-<meta property="og:url" content="http://guleilab.com/2016/02/24/OpenInSafari/index.html">
+<meta property="og:title" content="修改 CentOS7 的系统日志限制">
+<meta property="og:url" content="http://guleilab.com/2019/01/02/centos-syslog/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="通过脚本使用快捷键在Safari中打开Chrome的当前网页">
+<meta property="og:description" content="在有 IO 时调试 NFS，systemd-journald提示Missed kernel message信息，是由于同一时间日志输出太多导致的日志丢失。本文章将介绍如何调整系统日志限制。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://guleilab.com/2016/02/24/OpenInSafari/1.png">
-<meta property="og:image" content="http://guleilab.com/2016/02/24/OpenInSafari/2.png">
-<meta property="og:updated_time" content="2018-12-19T03:26:16.000Z">
+<meta property="og:updated_time" content="2019-01-02T14:37:33.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="在Safari中打开Chrome的当前页">
-<meta name="twitter:description" content="通过脚本使用快捷键在Safari中打开Chrome的当前网页">
-<meta name="twitter:image" content="http://guleilab.com/2016/02/24/OpenInSafari/1.png">
+<meta name="twitter:title" content="修改 CentOS7 的系统日志限制">
+<meta name="twitter:description" content="在有 IO 时调试 NFS，systemd-journald提示Missed kernel message信息，是由于同一时间日志输出太多导致的日志丢失。本文章将介绍如何调整系统日志限制。">
 
 
 
@@ -122,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://guleilab.com/2016/02/24/OpenInSafari/"/>
+  <link rel="canonical" href="http://guleilab.com/2019/01/02/centos-syslog/"/>
 
 
 
 
 
-  <title>在Safari中打开Chrome的当前页 | GuLei's Lab</title>
+  <title>修改 CentOS7 的系统日志限制 | GuLei's Lab</title>
   
 
 
@@ -274,7 +272,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2016/02/24/OpenInSafari/">
+    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2019/01/02/centos-syslog/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Lei">
@@ -291,7 +289,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">在Safari中打开Chrome的当前页</h1>
+          <h1 class="post-title" itemprop="name headline">修改 CentOS7 的系统日志限制</h1>
         
 
         <div class="post-meta">
@@ -303,8 +301,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-24T13:35:09+08:00">
-                2016-02-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-02T22:03:11+08:00">
+                2019-01-02
               </time>
             
 
@@ -314,28 +312,6 @@
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Mac配置/" itemprop="url" rel="index">
-                    <span itemprop="name">Mac配置</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -343,7 +319,7 @@
 
           
           
-             <span id="/2016/02/24/OpenInSafari/" class="leancloud_visitors" data-flag-title="在Safari中打开Chrome的当前页">
+             <span id="/2019/01/02/centos-syslog/" class="leancloud_visitors" data-flag-title="修改 CentOS7 的系统日志限制">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -360,10 +336,6 @@
           
 
           
-              <div class="post-description">
-                  通过脚本使用快捷键在Safari中打开Chrome的当前网页
-              </div>
-          
 
         </div>
       </header>
@@ -378,25 +350,17 @@
       
 
       
-        <p>Chrome插件丰富、浏览网页速度极快是我的主力浏览器，但是美中不足是看视频发热及其严重。系统自带的Safari浏览器针对Mac优化做的很好，看视频几乎不发热，是Mac上对Chrome的补足。</p>
-<p>每当用Chrome打开视频或者打不开某个网页的时候，我们复制网址、打开Safari、粘贴网址很费时间，会降低我们的体验。</p>
-<p>为了一键解决这个问题，我来是想写一个Chrome插件的，后来发现<code>AppleScript</code>这个功能非常强大，可以很轻松解决该问题。可以说<code>AppleScript</code>为我打开了一扇使用Mac的新大门。</p>
-<p>本博文参考<a href="https://www.quora.com/Is-there-an-open-in-Safari-plugin-for-Chrome" target="_blank" rel="noopener">这里</a></p>
-<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="写脚本"><a href="#写脚本" class="headerlink" title="写脚本"></a>写脚本</h2><p>如图所示</p>
-<p> <img src="/2016/02/24/OpenInSafari/1.png" alt="1"></p>
-<ol>
-<li>使用<code>Spotlight</code>打开<code>Automator</code></li>
-<li>创建新<code>服务</code></li>
-<li>在左边找到<code>运行 AppleScript</code>并拖到右边空白处</li>
-<li>右侧顶栏设置：<em>“服务”收到</em>设置为<strong>没有输入</strong>，<em>位于</em>设置为<strong>Google Chrome.app</strong></li>
-<li>将下面脚本复制到<em>运行 AppleScript</em>的空白处，保存为“open in safari”</li>
-</ol>
-<p>脚本如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">property theURL : &quot;&quot;</span><br><span class="line">tell application &quot;Google Chrome&quot;</span><br><span class="line">  set theURL to URL of active tab of window 0</span><br><span class="line">end tell</span><br><span class="line"></span><br><span class="line">if appIsRunning(&quot;Safari&quot;) then</span><br><span class="line">  tell application &quot;Safari&quot;</span><br><span class="line">		tell front window</span><br><span class="line">			open location theURL</span><br><span class="line">		end tell</span><br><span class="line">		activate</span><br><span class="line">	end tell</span><br><span class="line">else</span><br><span class="line">	tell application &quot;Safari&quot;</span><br><span class="line">		-- Safari not running, so start it</span><br><span class="line">		do shell script &quot;open -a \&quot;Safari\&quot;&quot;</span><br><span class="line">		tell front window</span><br><span class="line">			open location theURL</span><br><span class="line">		end tell</span><br><span class="line">		activate</span><br><span class="line">	end tell</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line">on appIsRunning(appName)</span><br><span class="line">	tell application &quot;System Events&quot; to (name of processes) contains appName</span><br><span class="line">end appIsRunning</span><br></pre></td></tr></table></figure>
-<h2 id="设置快捷键"><a href="#设置快捷键" class="headerlink" title="设置快捷键"></a>设置快捷键</h2><p>如图所示</p>
-<p> <img src="/2016/02/24/OpenInSafari/2.png" alt="2"></p>
-<p>打开<code>系统偏好设置</code>-<code>键盘</code>-<code>快捷键</code>，单击左侧<code>服务</code>，在右侧中找到“open in safari”并设置自己喜欢的快捷键。这里我设置为<code>Command+Shift+S</code>。</p>
-<p>这样，我们在Chrome中打开一个网页可以使用上面我们设置的快捷键使之在Safari中打开。</p>
+        <p>在有 IO 时调试 NFS，systemd-journald提示<code>Missed kernel message</code>信息，是由于同一时间日志输出太多导致的日志丢失。本文章将介绍如何调整系统日志限制。</p>
+<a id="more"></a>
+<p>Centos 7使用<code>systemd-journald</code>做日志中心库，使用<code>rsyslog</code>来持久化日志，使用<code>logrotate</code>来管理日志文件。详细请参考<a href="https://ieevee.com/tech/2017/08/24/journald.html" target="_blank" rel="noopener">这篇文章</a>。</p>
+<h1 id="修改系统日志限制"><a href="#修改系统日志限制" class="headerlink" title="修改系统日志限制"></a>修改系统日志限制</h1><h2 id="修改-systemd-journald-限制"><a href="#修改-systemd-journald-限制" class="headerlink" title="修改 systemd-journald 限制"></a>修改 systemd-journald 限制</h2><p>使用文本编辑器打开配置文件<code>/etc/systemd/journald.conf</code>，添加以下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RateLimitInterval=0</span><br><span class="line">RateLimitBurst=0</span><br></pre></td></tr></table></figure>
+<p><code>RateLimitInterval</code>和<code>RateLimitBurst</code>用于限制日志的生成速度（设置为0表示无限制）。其中，<code>RateLimitInterval</code>用于设置一个时间段长度，默认值是30秒。 <code>RateLimitBurst</code> 用于设置一个正整数，表示消息条数，默认值是1000条。表示在 <code>RateLimitInterval</code> 时间段内， 每个服务最多允许产生 <code>RateLimitBurst</code> 数量(条数)的日志。 在同一个时间段内，超出数量限制的日志将被丢弃，直到下一个时间段才能再次开始记录。 特别的，这个限制是针对每个服务的限制，一个服务超限并不会影响到另一个服务的日志记录。</p>
+<p>重启服务<code>systemctl restart systemd-journald</code>。</p>
+<h2 id="关闭-rsyslog-限制"><a href="#关闭-rsyslog-限制" class="headerlink" title="关闭 rsyslog 限制"></a>关闭 rsyslog 限制</h2><p>使用文本编辑器打开配置文件<code>/etc/rsyslog.conf</code>，在<strong>Global Directives</strong>字段中添加以下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Disable rate-limiting of log entries</span><br><span class="line">$SystemLogRateLimitInterval 0</span><br><span class="line">$SystemLogRateLimitBurst 0</span><br></pre></td></tr></table></figure>
+<p>类似<code>systemd-journald</code>，以上两个参数表示相同功能。</p>
+<p>重启服务<code>systemctl restart rsyslog</code>。</p>
 
       
     </div>
@@ -412,6 +376,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
 
       
       
@@ -421,8 +391,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/12/31/config-c-c-layer-for-in-spacemacs/" rel="next" title="Configure c/c++ layer for pure c in Spacemacs">
-                <i class="fa fa-chevron-left"></i> Configure c/c++ layer for pure c in Spacemacs
+              <a href="/2018/10/19/reliable-file-updates-with-python/" rel="next" title="使用 Python 进行可靠的文件 IO">
+                <i class="fa fa-chevron-left"></i> 使用 Python 进行可靠的文件 IO
               </a>
             
           </div>
@@ -430,10 +400,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/02/27/ModAndRem/" rel="prev" title="整数的取模和取余">
-                整数的取模和取余 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -569,7 +535,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解决方案"><span class="nav-number">1.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#写脚本"><span class="nav-number">1.1.</span> <span class="nav-text">写脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置快捷键"><span class="nav-number">1.2.</span> <span class="nav-text">设置快捷键</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#修改系统日志限制"><span class="nav-number">1.</span> <span class="nav-text">修改系统日志限制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改-systemd-journald-限制"><span class="nav-number">1.1.</span> <span class="nav-text">修改 systemd-journald 限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关闭-rsyslog-限制"><span class="nav-number">1.2.</span> <span class="nav-text">关闭 rsyslog 限制</span></a></li></ol></li></ol></div>
             
 
           </div>
