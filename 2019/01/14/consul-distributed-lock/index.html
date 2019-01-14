@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="最近公司项目在使用 Consul 做分布式服务，在开发过程中有业务需要分布式锁来做控制逻辑和集群选举，因此使用 Consul 的 Session 机制和 K/V 存储实现了一个分布式锁。 Consul 实现分布式锁实现方法使用 Consul 实现分布式锁在 Consul 的官方文档中有所描述。 Consul KV 支持acquire和release操作。acquire/release操作实现了一种">
+<meta name="description" content="最近公司项目在使用 Consul 做分布式服务，在开发过程中有业务需要分布式锁来做控制逻辑和集群选举，因此使用 Consul 的 Session 机制和 K/V 存储实现了一个分布式锁。">
 <meta name="keywords" content="分布式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 Consul 实现分布式锁">
 <meta property="og:url" content="http://guleilab.com/2019/01/14/consul-distributed-lock/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="最近公司项目在使用 Consul 做分布式服务，在开发过程中有业务需要分布式锁来做控制逻辑和集群选举，因此使用 Consul 的 Session 机制和 K/V 存储实现了一个分布式锁。 Consul 实现分布式锁实现方法使用 Consul 实现分布式锁在 Consul 的官方文档中有所描述。 Consul KV 支持acquire和release操作。acquire/release操作实现了一种">
+<meta property="og:description" content="最近公司项目在使用 Consul 做分布式服务，在开发过程中有业务需要分布式锁来做控制逻辑和集群选举，因此使用 Consul 的 Session 机制和 K/V 存储实现了一个分布式锁。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-14T13:48:59.000Z">
+<meta property="og:updated_time" content="2019-01-14T13:50:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 Consul 实现分布式锁">
-<meta name="twitter:description" content="最近公司项目在使用 Consul 做分布式服务，在开发过程中有业务需要分布式锁来做控制逻辑和集群选举，因此使用 Consul 的 Session 机制和 K/V 存储实现了一个分布式锁。 Consul 实现分布式锁实现方法使用 Consul 实现分布式锁在 Consul 的官方文档中有所描述。 Consul KV 支持acquire和release操作。acquire/release操作实现了一种">
+<meta name="twitter:description" content="最近公司项目在使用 Consul 做分布式服务，在开发过程中有业务需要分布式锁来做控制逻辑和集群选举，因此使用 Consul 的 Session 机制和 K/V 存储实现了一个分布式锁。">
 
 
 
@@ -373,6 +373,7 @@
 
       
         <p>最近公司项目在使用 Consul 做分布式服务，在开发过程中有业务需要分布式锁来做控制逻辑和集群选举，因此使用 Consul 的 Session 机制和 K/V 存储实现了一个分布式锁。</p>
+<a id="more"></a>
 <h1 id="Consul-实现分布式锁"><a href="#Consul-实现分布式锁" class="headerlink" title="Consul 实现分布式锁"></a>Consul 实现分布式锁</h1><h2 id="实现方法"><a href="#实现方法" class="headerlink" title="实现方法"></a>实现方法</h2><p>使用 Consul 实现分布式锁在 Consul 的<a href="https://www.consul.io/docs/internals/sessions.html#k-v-integration" target="_blank" rel="noopener">官方文档</a>中有所描述。</p>
 <p>Consul KV 支持<code>acquire</code>和<code>release</code>操作。<code>acquire/release</code>操作实现了一种类似 <a href="https://en.wikipedia.org/wiki/Compare-and-swap" target="_blank" rel="noopener">Check-And-Set</a>操作，这两个操作使用 Consul Session 进行操作：</p>
 <ul>
