@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="在有 IO 时调试 NFS，systemd-journald提示Missed kernel message信息，是由于同一时间日志输出太多导致的日志丢失。本文章将介绍如何调整系统日志限制。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-16T07:33:13.000Z">
+<meta property="og:updated_time" content="2019-01-16T07:34:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="修改 CentOS7 的系统日志限制">
 <meta name="twitter:description" content="在有 IO 时调试 NFS，systemd-journald提示Missed kernel message信息，是由于同一时间日志输出太多导致的日志丢失。本文章将介绍如何调整系统日志限制。">
@@ -353,7 +353,7 @@
         <p>在有 IO 时调试 NFS，systemd-journald提示<code>Missed kernel message</code>信息，是由于同一时间日志输出太多导致的日志丢失。本文章将介绍如何调整系统日志限制。</p>
 <a id="more"></a>
 <p>Centos 7使用<code>systemd-journald</code>做日志中心库，使用<code>rsyslog</code>来持久化日志，使用<code>logrotate</code>来管理日志文件。详细请参考<a href="https://ieevee.com/tech/2017/08/24/journald.html" target="_blank" rel="noopener">这篇文章</a>。</p>
-<h1 id="修改系统日志限制"><a href="#修改系统日志限制" class="headerlink" title="修改系统日志限制"></a>修改系统日志限制</h1><h2 id="修改-systemd-journald-限制"><a href="#修改-systemd-journald-限制" class="headerlink" title="修改 systemd-journald 限制"></a>修改 systemd-journald 限制</h2><p>使用文本编辑器打开配置文件<code>/etc/systemd/journald.conf</code>，添加以下内容：</p>
+<h1 id="修改系统日志限制"><a href="#修改系统日志限制" class="headerlink" title="修改系统日志限制"></a>修改系统日志限制</h1><h2 id="修改-systemd-journald-限制"><a href="#修改-systemd-journald-限制" class="headerlink" title="修改 systemd-journald 限制"></a>修改 systemd-journald 限制</h2><p>使用文本编辑器打开配置文件<code>/etc/systemd/journald.conf</code>，官方文档戳<a href="https://www.unix.com/man-page/centos/5/journald.conf/" target="_blank" rel="noopener">这里</a>，添加以下内容：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RateLimitInterval=0s</span><br><span class="line">RateLimitBurst=0</span><br></pre></td></tr></table></figure>
 <p><code>RateLimitInterval</code>和<code>RateLimitBurst</code>用于限制日志的生成速度（设置为0表示无限制）。其中，<code>RateLimitInterval</code>用于设置一个时间段长度，默认值是30秒，单位可以是<code>s/min/h/ms/us</code>。 <code>RateLimitBurst</code> 用于设置一个正整数，表示消息条数，默认值是1000条。表示在 <code>RateLimitInterval</code> 时间段内， 每个服务最多允许产生 <code>RateLimitBurst</code> 数量(条数)的日志。 在同一个时间段内，超出数量限制的日志将被丢弃，直到下一个时间段才能再次开始记录。 特别的，这个限制是针对每个服务的限制，一个服务超限并不会影响到另一个服务的日志记录。</p>
 <p>重启服务<code>systemctl restart systemd-journald</code>。</p>
