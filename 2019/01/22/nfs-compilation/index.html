@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="NFS," />
 
 
 
@@ -79,19 +79,18 @@
 
 
 
-<meta name="description" content="使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能">
+<meta name="description" content="NFS 在 Redhat 内核中默认以模块的方式编译安装，因此编译 NFS 代码无需编译整个内核，仅需要编译 NFS 模块及其相关模块，然后将模块进行替换即可。">
+<meta name="keywords" content="NFS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="给 org-pomodoro 增加桌面通知功能">
-<meta property="og:url" content="http://guleilab.com/2016/05/05/OrgPomodoroNotifier/index.html">
+<meta property="og:title" content="在 CentOS&#x2F;Redhat 环境中编译 NFS">
+<meta property="og:url" content="http://guleilab.com/2019/01/22/nfs-compilation/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能">
+<meta property="og:description" content="NFS 在 Redhat 内核中默认以模块的方式编译安装，因此编译 NFS 代码无需编译整个内核，仅需要编译 NFS 模块及其相关模块，然后将模块进行替换即可。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://guleilab.com/2016/05/05/OrgPomodoroNotifier/1.png">
-<meta property="og:updated_time" content="2018-12-19T03:26:29.000Z">
+<meta property="og:updated_time" content="2019-01-22T06:22:03.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="给 org-pomodoro 增加桌面通知功能">
-<meta name="twitter:description" content="使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能">
-<meta name="twitter:image" content="http://guleilab.com/2016/05/05/OrgPomodoroNotifier/1.png">
+<meta name="twitter:title" content="在 CentOS&#x2F;Redhat 环境中编译 NFS">
+<meta name="twitter:description" content="NFS 在 Redhat 内核中默认以模块的方式编译安装，因此编译 NFS 代码无需编译整个内核，仅需要编译 NFS 模块及其相关模块，然后将模块进行替换即可。">
 
 
 
@@ -121,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://guleilab.com/2016/05/05/OrgPomodoroNotifier/"/>
+  <link rel="canonical" href="http://guleilab.com/2019/01/22/nfs-compilation/"/>
 
 
 
 
 
-  <title>给 org-pomodoro 增加桌面通知功能 | GuLei's Lab</title>
+  <title>在 CentOS/Redhat 环境中编译 NFS | GuLei's Lab</title>
   
 
 
@@ -273,7 +272,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2016/05/05/OrgPomodoroNotifier/">
+    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2019/01/22/nfs-compilation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Lei">
@@ -290,7 +289,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">给 org-pomodoro 增加桌面通知功能</h1>
+          <h1 class="post-title" itemprop="name headline">在 CentOS/Redhat 环境中编译 NFS</h1>
         
 
         <div class="post-meta">
@@ -302,8 +301,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-05T11:11:52+08:00">
-                2016-05-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T10:55:21+08:00">
+                2019-01-22
               </time>
             
 
@@ -325,8 +324,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Emacs/" itemprop="url" rel="index">
-                    <span itemprop="name">Emacs</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -342,7 +341,7 @@
 
           
           
-             <span id="/2016/05/05/OrgPomodoroNotifier/" class="leancloud_visitors" data-flag-title="给 org-pomodoro 增加桌面通知功能">
+             <span id="/2019/01/22/nfs-compilation/" class="leancloud_visitors" data-flag-title="在 CentOS/Redhat 环境中编译 NFS">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -359,10 +358,6 @@
           
 
           
-              <div class="post-description">
-                  使用 terminal-notifier 给 org-pomodoro 增加桌面通知功能
-              </div>
-          
 
         </div>
       </header>
@@ -377,19 +372,50 @@
       
 
       
-        <p>因为我不是那么追求对 Emacs 使用的极致，在使用 <code>org-mode</code> 作为 <code>GTD</code> 工具的时候，会跳出 Emacs 使用别的工具。因此经常会因为看不到 <code>org-pomodoro</code> 的提示而忘记休息、开启新的番茄时钟。 那么，如果能让番茄时钟在工作、休息结束时跳出桌面通知，那就非常方便了。</p>
-<h1 id="实现-Emacs-和系统交互"><a href="#实现-Emacs-和系统交互" class="headerlink" title="实现 Emacs 和系统交互"></a>实现 Emacs 和系统交互</h1><p>想要让 <code>org-pomodoro</code> 在工作、休息结束时通知操作系统，我们就需要一个 <strong>中间件</strong> 来作为 <code>Emacs</code> 和 <code>OS</code> 交流的桥梁。幸运的是，这个桥梁已经有人做好啦，我查找到的资料有两个选择</p>
-<ol>
-<li><a href="https://github.com/julienXX/terminal-notifier" target="_blank" rel="noopener">terminal-notifier</a>: 一个开源的命令行消息通知插件。但是只支持 <strong>Mac OS X</strong> ；</li>
-<li><a href="http://growl.info/" target="_blank" rel="noopener">Growl</a>: 一个收费的软件，支持 Mac OS X，同时有<a href="http://www.growlforwindows.com/gfw/help/growlnotify.aspx" target="_blank" rel="noopener">Windows 版</a>（我不清楚是否收费）和一个重新实现的开源的<a href="https://github.com/mattn/growl-for-linux" target="_blank" rel="noopener">Linux 版</a>。</li>
-</ol>
-<p>我使用的是 Mac，虽然 <code>Growl</code> 价格只有 25RMB，但是我更倾向使用开源软件。</p>
-<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>这里我介绍一下使用 <code>terminal-notifier</code> 的配置方法，如果你使用 <code>Growl</code> 可以参考<a href="https://github.com/zilongshanren/spacemacs-private/blob/f9c44737938204042924556334a94b85e3e14c02/layers/guanghui/packages.el" target="_blank" rel="noopener">子龙山人</a> 的配置。</p>
-<h2 id="安装-terminal-notifier"><a href="#安装-terminal-notifier" class="headerlink" title="安装 terminal-notifier"></a>安装 terminal-notifier</h2><p>安装 <code>terminal-notifier</code> 非常简单，只需要两步。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install terminal-notifier</span><br><span class="line">brew linkapps</span><br></pre></td></tr></table></figure>
-<h2 id="定义通知函数"><a href="#定义通知函数" class="headerlink" title="定义通知函数"></a>定义通知函数</h2><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">defun</span> notify-osx (<span class="name">title</span> message)   </span><br><span class="line">	(<span class="name">call-process</span> <span class="string">"terminal-notifier"</span>		 </span><br><span class="line">		<span class="literal">nil</span> <span class="number">0</span> <span class="literal">nil</span>		 </span><br><span class="line">		<span class="string">"-group"</span> <span class="string">"Emacs"</span>		 </span><br><span class="line">		<span class="string">"-title"</span> title		 </span><br><span class="line">		<span class="string">"-sender"</span> <span class="string">"org.gnu.Emacs"</span>		 </span><br><span class="line">		<span class="string">"-message"</span> message		 </span><br><span class="line">		<span class="string">"-activate"</span> <span class="string">"oeg.gnu.Emacs"</span>))</span><br></pre></td></tr></table></figure>
-<h2 id="定制通知内容"><a href="#定制通知内容" class="headerlink" title="定制通知内容"></a>定制通知内容</h2><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro completed!"</span> <span class="string">"Time for a break."</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-break-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">        (<span class="name">notify-osx</span> <span class="string">"Pomodoro Short Break Finished"</span> <span class="string">"Ready for Another?"</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-long-break-finished-hook</span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro Long Break Finished"</span> <span class="string">"Ready for Another?"</span>)))</span><br><span class="line">(<span class="name">add-hook</span> 'org-pomodoro-killed-hook    </span><br><span class="line">	(<span class="name">lambda</span> ()</span><br><span class="line">		(<span class="name">notify-osx</span> <span class="string">"Pomodoro Killed"</span> <span class="string">"One does not simply kill a pomodoro!"</span>)))</span><br></pre></td></tr></table></figure>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p> <img src="/2016/05/05/OrgPomodoroNotifier/1.png" alt="1"></p>
+        <p>NFS 在 Redhat 内核中默认以模块的方式编译安装，因此编译 NFS 代码无需编译整个内核，仅需要编译 NFS 模块及其相关模块，然后将模块进行替换即可。</p>
+<a id="more"></a>
+<h1 id="NFS-源码结构"><a href="#NFS-源码结构" class="headerlink" title="NFS 源码结构"></a>NFS 源码结构</h1><p>NFS 从架构上分客户端和服务端，详细参考 <a href="https://www.ibm.com/developerworks/cn/linux/l-network-filesystems/index.html" target="_blank" rel="noopener">NFS 架构</a>。</p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><p>Client Side 的头文件在 <code>include/linux/</code> 下面，C 文件在 <code>fs/nfs</code> 下面。</p>
+<ul>
+<li><code>dir.c/file.c/inode.c/symlink.c/unlink.c</code>：与文件操作相关的系统调用</li>
+<li><code>read.c/write.c/flushd.c</code>：文件读写</li>
+<li><code>mount_clnt.c/nfs_root.c</code>：将 NFS 文件系统作为 root 目录的相关实现</li>
+</ul>
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><p>Server Side 的头文件在 <code>include/linux/nfsd</code> 下面，C 文件在 <code>fs/nfsd</code> 下面。</p>
+<ul>
+<li><code>auth.c/lockd.c/export.c/nfsctl.c/nfscache.c/nfsfh.c/stats.c</code>：导出目录的访问管理</li>
+<li><code>nfssvc.c</code>：NFS 服务 deamon 的实现</li>
+<li><code>vfs.c</code>：将 NFS 文件系统的操作转换成具体文件系统的操作</li>
+</ul>
+<h1 id="编译-NFS"><a href="#编译-NFS" class="headerlink" title="编译 NFS"></a>编译 NFS</h1><h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><p>编译 NFS 需要满足两个前置条件：</p>
+<ul>
+<li>获取对应版本的内核源码。内核版本可以使用<code>uname -r</code>查看，具体获取方法可以参考<a href="http://guleilab.com/2019/01/21/linux-kernel-compilation/#%E8%8E%B7%E5%8F%96%E5%86%85%E6%A0%B8%E6%BA%90%E7%A0%81">这里</a>。</li>
+<li>安装内核编译软件依赖包。CentOS 可以使用 <code>groupinstall</code>安装<strong>Development Tools</strong>工具组。</li>
+</ul>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h3 id="编译模块"><a href="#编译模块" class="headerlink" title="编译模块"></a>编译模块</h3><p>编译内核模块步骤如下：</p>
+<ul>
+<li>进入模块目录，如<code>fs/nfs</code>；</li>
+<li>运行<code>make CONFIG_XXX=m -C &lt;kernel_source_path&gt; M=$(pwd) modules</code>。其中，<code>CONFIG_XXX</code>是模块在内核配置项中的名称，<code>&lt;kernel_source_path&gt;</code>是内核源码地址。</li>
+</ul>
+<h3 id="操作模块"><a href="#操作模块" class="headerlink" title="操作模块"></a>操作模块</h3><p>模块就像 rpm 软件包一样，可以安装、卸载，模块和模块之间也存在依赖关系。命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看所有被加载的模块</span></span><br><span class="line">lsmod</span><br><span class="line">lsmod |grep &lt;module_name&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装模块</span></span><br><span class="line">insmod &lt;module_ko&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载模块</span></span><br><span class="line">rmmod &lt;module_name&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="编译依赖模块"><a href="#编译依赖模块" class="headerlink" title="编译依赖模块"></a>编译依赖模块</h2><p>NFS 模块依赖于<code>fscache</code>模块。先通过<code>lsmod |grep fscache</code>查看该模块是否安装，如已安装可以跳过本节继续进行。</p>
+<p>进入源码目录<code>fs/fscache</code>，使用如下命令进行编译。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make CONFIG_FSCACHE=m -C &lt;kernel_sourece_path&gt; M=&lt;kernel sourece path&gt;/fs/fscache modules</span><br></pre></td></tr></table></figure>
+<p>编译完成后安装模块：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insmod &lt;kernel sourece path&gt;/fs/fscache/fscache.ko</span><br></pre></td></tr></table></figure>
+<h2 id="编译-NFS-1"><a href="#编译-NFS-1" class="headerlink" title="编译 NFS"></a>编译 NFS</h2><p>进入源码目录，客户端进入<code>fs/nfs</code>，服务端进入<code>fs/nfsd</code>，运行编译模块命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> client</span></span><br><span class="line">make CONFIG_NFS_FS=m -C &lt;kernel sourece path&gt; M=&lt;kernel sourece path&gt;/fs/nfs modules</span><br><span class="line"><span class="meta">#</span><span class="bash"> server</span></span><br><span class="line">make CONFIG_NFSD=m -C &lt;kernel sourece path&gt; M=&lt;kernel sourece path&gt;/fs/nfsd modules</span><br></pre></td></tr></table></figure>
+<p>编译完成后，<code>fs/nfs</code>目录下会生成<code>nfs.ko/nfsv3.ko/nfsv4.ko</code>，<code>fs/nfsd</code>目录下会生成<code>nfsd.ko</code>。</p>
+<h2 id="安装-NFS-模块"><a href="#安装-NFS-模块" class="headerlink" title="安装 NFS 模块"></a>安装 NFS 模块</h2><p>在安装模块之前，需要查看该模块是否已被系统加载：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsmod |grep nfs</span><br></pre></td></tr></table></figure>
+<p>如果已被加载，需要先卸载该模块和<strong>其他依赖该模块的模块</strong>。</p>
+<h3 id="模块间依赖"><a href="#模块间依赖" class="headerlink" title="模块间依赖"></a>模块间依赖</h3><ul>
+<li><code>nfs</code>：被<code>nfsv3/nfsv4</code>依赖，卸载前卸载这两个依赖模块。<em>如提示<code>Module xxx is in use</code>，检查是否有 NFS 挂载</em>；</li>
+<li><code>nfsd</code>：该模块被十多个进程、服务依赖，卸载前运行<code>systemctl stop nfs-server/proc-fs-nfsd.mount</code></li>
+<li><code>sunrpc</code>：该模块被更多服务、模块依赖，可以通过<code>lsmod |grep sunrpc</code>查看依赖模块，停止<code>systemctl stop var-lib-nfs-rpc_pipefs.mount</code></li>
+</ul>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># client</span><br><span class="line">insmod nfsv3.ko/nfsv4.ko/nfs.ko</span><br><span class="line"># server</span><br><span class="line">insmod nfsd</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -405,6 +431,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/NFS/" rel="tag"># NFS</a>
+          
+        </div>
+      
 
       
       
@@ -414,8 +446,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/05/VPS/" rel="next" title="科学上网">
-                <i class="fa fa-chevron-left"></i> 科学上网
+              <a href="/2019/01/21/linux-kernel-compilation/" rel="next" title="编译 CentOS/Redhat 内核">
+                <i class="fa fa-chevron-left"></i> 编译 CentOS/Redhat 内核
               </a>
             
           </div>
@@ -423,10 +455,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/23/linux-multiIP-on-singel-inetface/" rel="prev" title="Linux 单网卡配置多 IP">
-                Linux 单网卡配置多 IP <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -562,7 +590,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#实现-Emacs-和系统交互"><span class="nav-number">1.</span> <span class="nav-text">实现 Emacs 和系统交互</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-terminal-notifier"><span class="nav-number">2.1.</span> <span class="nav-text">安装 terminal-notifier</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义通知函数"><span class="nav-number">2.2.</span> <span class="nav-text">定义通知函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定制通知内容"><span class="nav-number">2.3.</span> <span class="nav-text">定制通知内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">2.4.</span> <span class="nav-text">效果</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NFS-源码结构"><span class="nav-number">1.</span> <span class="nav-text">NFS 源码结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端"><span class="nav-number">1.1.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端"><span class="nav-number">1.2.</span> <span class="nav-text">服务端</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译-NFS"><span class="nav-number">2.</span> <span class="nav-text">编译 NFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前置条件"><span class="nav-number">2.1.</span> <span class="nav-text">前置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础"><span class="nav-number">2.2.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译模块"><span class="nav-number">2.2.1.</span> <span class="nav-text">编译模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作模块"><span class="nav-number">2.2.2.</span> <span class="nav-text">操作模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译依赖模块"><span class="nav-number">2.3.</span> <span class="nav-text">编译依赖模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译-NFS-1"><span class="nav-number">2.4.</span> <span class="nav-text">编译 NFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-NFS-模块"><span class="nav-number">2.5.</span> <span class="nav-text">安装 NFS 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块间依赖"><span class="nav-number">2.5.1.</span> <span class="nav-text">模块间依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">2.5.2.</span> <span class="nav-text">安装</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

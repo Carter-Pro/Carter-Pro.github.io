@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://guleilab.com/2019/01/22/nfs-compilation/</loc>
+    
+    <lastmod>2019-01-22T06:22:03.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://guleilab.com/2019/01/17/python-argparser/</loc>
+    
+    <lastmod>2019-01-21T13:46:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://guleilab.com/2019/01/21/linux-kernel-compilation/</loc>
     
     <lastmod>2019-01-21T09:52:49.000Z</lastmod>
@@ -19,13 +33,6 @@
     <loc>http://guleilab.com/2019/01/18/python-subprocess/</loc>
     
     <lastmod>2019-01-18T06:14:57.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://guleilab.com/2019/01/17/python-argparser/</loc>
-    
-    <lastmod>2019-01-17T14:45:10.000Z</lastmod>
     
   </url>
   
