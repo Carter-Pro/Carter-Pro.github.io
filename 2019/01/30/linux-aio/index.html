@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。 介绍异步 I/O (Asynchronous I/O, AIO) 是一种提升 I/O 操作性能的方法。AIO可以允许进程发起很多 I/O 操作，而不用阻塞或等待任何操作完成。稍后或在接收到 I/O 操作完成的通知时，进程就可以检查 I/O 操作的结果。 在 Linux">
+<meta name="description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
 <meta name="keywords" content="aio">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux 异步 I&#x2F;O">
 <meta property="og:url" content="http://guleilab.com/2019/01/30/linux-aio/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。 介绍异步 I/O (Asynchronous I/O, AIO) 是一种提升 I/O 操作性能的方法。AIO可以允许进程发起很多 I/O 操作，而不用阻塞或等待任何操作完成。稍后或在接收到 I/O 操作完成的通知时，进程就可以检查 I/O 操作的结果。 在 Linux">
+<meta property="og:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-31T02:54:21.000Z">
+<meta property="og:updated_time" content="2019-01-31T02:55:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux 异步 I&#x2F;O">
-<meta name="twitter:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。 介绍异步 I/O (Asynchronous I/O, AIO) 是一种提升 I/O 操作性能的方法。AIO可以允许进程发起很多 I/O 操作，而不用阻塞或等待任何操作完成。稍后或在接收到 I/O 操作完成的通知时，进程就可以检查 I/O 操作的结果。 在 Linux">
+<meta name="twitter:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
 
 
 
@@ -373,6 +373,7 @@
 
       
         <p>最近看了一篇不错的文章<a href="https://oxnz.github.io/2016/10/13/linux-aio/#struct-iocb" target="_blank" rel="noopener">《Linux Asynchronous I/O》</a>，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。</p>
+<a id="more"></a>
 <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>异步 I/O (Asynchronous I/O, AIO) 是一种提升 I/O 操作性能的方法。AIO可以允许进程发起很多 I/O 操作，而不用阻塞或等待任何操作完成。稍后或在接收到 I/O 操作完成的通知时，进程就可以检查 I/O 操作的结果。</p>
 <p>在 Linux 系统上有三种方式来实现 AIO：</p>
 <ul>
