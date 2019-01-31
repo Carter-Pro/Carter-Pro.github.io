@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-31T03:08:54.000Z">
+<meta property="og:updated_time" content="2019-01-31T03:17:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux 异步 I&#x2F;O">
 <meta name="twitter:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
@@ -494,8 +494,8 @@
 <p><code>io_getevents</code>函数返回值如下：</p>
 <ol>
 <li>$ret = nr​$。从内核获取到了所有事件，这有可能意味着内核中还有更多挂起的事件；</li>
-<li>$min_nr &lt; ret &lt; nr$。目前内核中所有的可用事件都被读取且没有发生阻塞；</li>
-<li>$0 &lt; ret &lt; min_nr$。目前内核中所有的可用事件都被读取，同时阻塞用户声明的超时时间；</li>
+<li>$min\_nr &lt; ret &lt; nr$。目前内核中所有的可用事件都被读取且没有发生阻塞；</li>
+<li>$0 &lt; ret &lt; min\_nr$。目前内核中所有的可用事件都被读取，同时阻塞用户声明的超时时间；</li>
 <li>$ret = 0$。目前内核中没有事件可以返回；</li>
 <li>$ret &lt; 0​$。发生错误。</li>
 </ol>
