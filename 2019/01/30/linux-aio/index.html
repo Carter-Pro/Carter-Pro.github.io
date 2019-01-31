@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-31T03:03:32.000Z">
+<meta property="og:updated_time" content="2019-01-31T03:08:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux 异步 I&#x2F;O">
 <meta name="twitter:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
@@ -391,6 +391,7 @@
 <li>异步 I/O (aio)</li>
 </ul>
 </blockquote>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -412,6 +413,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h1 id="AIO-系统调用"><a href="#AIO-系统调用" class="headerlink" title="AIO 系统调用"></a>AIO 系统调用</h1><h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>AIO 系统系统调用入口点位于内核源码文件的<code>fs/aio.c</code>中。导出到用户空间的类型和常量都声明在<code>/usr/include/linux/aio_abi.h</code>这个头文件中。</p>
 <p>Linux 内核提供了5个系统调用来实现 AIO：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/aio_abi.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_setup</span><span class="params">(<span class="keyword">unsigned</span> nr_events, <span class="keyword">aio_context_t</span> *ctxp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_destroy</span><span class="params">(<span class="keyword">aio_context_t</span> ctx)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_submit</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, <span class="keyword">long</span> nr, struct iocb **iocbpp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_cancel</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, struct iocb *, struct io_event *result)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_getevents</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, <span class="keyword">long</span> min_nr, <span class="keyword">long</span> nr, </span></span></span><br><span class="line"><span class="function"><span class="params">                 struct io_event *events, struct timespec *timeout)</span></span>;</span><br></pre></td></tr></table></figure>
@@ -421,6 +423,7 @@
 <p>在异步非阻塞 I/O 中，我们可以同时发起多个传输操作。这需要每个传输操作都有唯一的上下文，这样我们才能在它们完成时区分到底是哪个传输操作完成了。在 AIO 中，这是一个 <code>aiocb</code>（AIO I/O Control Block）结构。这个结构包含了有关传输的所有信息，包括为数据准备的用户缓冲区。在产生 I/O （称为完成）通知时，<code>aiocb</code> 结构就被用来惟一标识所完成的 I/O 操作。</p>
 </blockquote>
 <p><code>io_submit()</code>参数如下。注意，iocb 数据的成员是指向 iocb 的指针。</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -443,6 +446,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p><code>io_submit()</code>返回值有一下几种：</p>
 <ol>
 <li>$ret = nr$。是最好的情况，所有的 iocbs 都成功处理；</li>
@@ -454,6 +458,7 @@
 </li>
 </ol>
 <p>在 iocb 提交成功后，进程可以继续做其他事情而不用等待 I/O 完成。对于每个完成的 I/O 请求（无论成功与否），内核都会创建一个 <code>io_event</code>结构。<code>io_getevents()</code>函数的功能就是获取 io_event 列表（和所有已完成的iocbs）。函数参数如下所示。</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -484,6 +489,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>特别的，如果已完成 iocb 数量没有达到期望最小值，则函数会阻塞；而指定超时时间，即使没有获取足够的事件，则等待一定时间后返回，不会一直阻塞。超时时间设置为<code>NULL</code>意味着一直等待。如果想要函数完全不等待、立马返回，则要将<code>timespec</code>结构中的秒和纳秒结构都初始化为0。</p>
 <p><code>io_getevents</code>函数返回值如下：</p>
 <ol>
@@ -491,7 +497,7 @@
 <li>$min_nr &lt; ret &lt; nr$。目前内核中所有的可用事件都被读取且没有发生阻塞；</li>
 <li>$0 &lt; ret &lt; min_nr$。目前内核中所有的可用事件都被读取，同时阻塞用户声明的超时时间；</li>
 <li>$ret = 0$。目前内核中没有事件可以返回；</li>
-<li>$ret &lt; 0$。发生错误。</li>
+<li>$ret &lt; 0​$。发生错误。</li>
 </ol>
 <h2 id="关键数据结构"><a href="#关键数据结构" class="headerlink" title="关键数据结构"></a>关键数据结构</h2><p><code>io_event</code>结构如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 该结构由 read() 函数从 /dev/aio 读取数据后返回. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">io_event</span> &#123;</span></span><br><span class="line">        __u64           data;           <span class="comment">/* 数据段，对应 iocb 的 aio_data 的值 */</span></span><br><span class="line">        __u64           obj;            <span class="comment">/* 事件对应的 iocb，指向对应 iocb 的指针 */</span></span><br><span class="line">        __s64           res;            <span class="comment">/* 对应 IO 请求的结果*/</span></span><br><span class="line">        __s64           res2;           <span class="comment">/* 对应 IO 请求的结果 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -1058,7 +1064,24 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
   
 
 

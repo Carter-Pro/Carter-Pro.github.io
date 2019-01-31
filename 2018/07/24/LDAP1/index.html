@@ -393,6 +393,7 @@
 <h3 id="启动-LDAP-服务"><a href="#启动-LDAP-服务" class="headerlink" title="启动 LDAP 服务"></a>启动 LDAP 服务</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl start slapd</span><br><span class="line">systemctl enable slapd</span><br></pre></td></tr></table></figure>
 <h2 id="配置-LDAP"><a href="#配置-LDAP" class="headerlink" title="配置 LDAP"></a>配置 LDAP</h2><p>在LDAP目录服务中使用<strong>LDIF</strong>(LDAP Interchange Format)格式来保存信息，而LDIF是一种标准的文本文件且可以随意的导入导出，所以我们需要有一种“格式”标准化LDIF文件的写法，这中格式叫做“schema”，schema用于指定一个目录中所包含对象的类型，以及每一个类型中的可选属性，我们可以将schema理解为面向对象程序设计中的“类”，通过“类”定义出具体的对象，因此其实LDIF数据条目则都是通过schema数据模型创建出来的具体对象：</p>
 <p><strong>ldapadd命令用于将LDIF文件导入到目录服务数据库中，格式为<code>ldapadd [参数] LDIF文件</code>。</strong></p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -423,6 +424,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h3 id="添加基础模块"><a href="#添加基础模块" class="headerlink" title="添加基础模块"></a>添加基础模块</h3><p>首先添加<code>cosine/nis/inetorgperson</code>三个基础模块：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif </span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif</span><br></pre></td></tr></table></figure>
 <h3 id="配置-LDAP-域名、管理员用户和密码"><a href="#配置-LDAP-域名、管理员用户和密码" class="headerlink" title="配置 LDAP 域名、管理员用户和密码"></a>配置 LDAP 域名、管理员用户和密码</h3><p>创建<code>/etc/openldap/changes.ldif</code>文件，并将下面的信息复制进去：</p>
@@ -976,7 +978,24 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
   
 
 

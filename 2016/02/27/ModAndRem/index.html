@@ -386,12 +386,12 @@
 <h1 id="数学上取模与取余"><a href="#数学上取模与取余" class="headerlink" title="数学上取模与取余"></a>数学上取模与取余</h1><h2 id="取模和取余的步骤"><a href="#取模和取余的步骤" class="headerlink" title="取模和取余的步骤"></a>取模和取余的步骤</h2><p>对于整数<code>a</code>和<code>b</code>来说，取模运算和取余运算步骤是一样的。</p>
 <ol>
 <li><p>求整数商<code>c</code></p>
-<p>$$<br>c = a / b<br>$$</p>
-<p>​</p>
+<script type="math/tex; mode=display">
+c = a / b</script><p>​</p>
 </li>
 <li><p>计算模/余数<code>r</code></p>
-<p>$$<br>r = a - c * b<br>$$</p>
-</li>
+<script type="math/tex; mode=display">
+r = a - c * b</script></li>
 </ol>
 <h2 id="取模和取余区别"><a href="#取模和取余区别" class="headerlink" title="取模和取余区别"></a>取模和取余区别</h2><p>取模和取余的区别在于第一步计算整数商<code>c</code>时取整的方法不一样。</p>
 <h3 id="整数除法取整的3种方法"><a href="#整数除法取整的3种方法" class="headerlink" title="整数除法取整的3种方法"></a>整数除法取整的3种方法</h3><ol>
@@ -409,6 +409,7 @@
 </ol>
 <h1 id="计算机的取模和取余"><a href="#计算机的取模和取余" class="headerlink" title="计算机的取模和取余"></a>计算机的取模和取余</h1><p>在流行编程语言中（除了matlab），<code>%</code>就是取余（至少在C、C++、Java和C#是这样的），教科书将这两个概念同化了。</p>
 <p>看一下C和Python计算上述例子。</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -427,6 +428,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>因为C语言在整除时使用了向零取整，Python使用了向下取整。</p>
 <p>与C语言习惯相同的还有C++与Java。</p>
 
@@ -958,7 +960,24 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
   
 
 

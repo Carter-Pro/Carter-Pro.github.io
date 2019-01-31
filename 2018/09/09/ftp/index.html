@@ -401,6 +401,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">anon_umask=022</span><br><span class="line">virtual_use_local_privs=NO # 将虚拟用户权限等级设定和匿名用户一样，提高安全性</span><br><span class="line">anon_world_readable_only=NO # 虚拟用户可写(并非设置为写)</span><br><span class="line">local_root=/path/to/dir # 设置虚拟用户的 homedir</span><br></pre></td></tr></table></figure>
 <h3 id="权限配置"><a href="#权限配置" class="headerlink" title="权限配置"></a>权限配置</h3><p>在通用配置的基础上，可以添加权限相关配置来进行虚拟用户权限控制。</p>
 <p>虚拟用户权限和配置如下表所示：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -442,6 +443,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h1 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h1><p>除了以上配置添加了白名单之外， vsftpd 还有一个自带的黑名单文件<code>/etc/vsftpd/ftpusers</code>，里面的用户均被禁止登陆 vsftp。</p>
 
       
@@ -966,7 +968,24 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
   
 
 
