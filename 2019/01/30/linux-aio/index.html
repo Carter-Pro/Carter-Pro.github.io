@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-31T02:56:36.000Z">
+<meta property="og:updated_time" content="2019-01-31T03:03:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux 异步 I&#x2F;O">
 <meta name="twitter:description" content="最近看了一篇不错的文章《Linux Asynchronous I/O》，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。">
@@ -412,7 +412,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="AIO-系统调用"><a href="#AIO-系统调用" class="headerlink" title="AIO 系统调用"></a>AIO 系统调用</h1><h2 id="ABI-接口"><a href="#ABI-接口" class="headerlink" title="ABI 接口"></a>ABI 接口</h2><p>AIO 系统系统调用入口点位于内核源码文件的<code>fs/aio.c</code>中。导出到用户空间的类型和常量都声明在<code>/usr/include/linux/aio_abi.h</code>这个头文件中。</p>
+<h1 id="AIO-系统调用"><a href="#AIO-系统调用" class="headerlink" title="AIO 系统调用"></a>AIO 系统调用</h1><h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>AIO 系统系统调用入口点位于内核源码文件的<code>fs/aio.c</code>中。导出到用户空间的类型和常量都声明在<code>/usr/include/linux/aio_abi.h</code>这个头文件中。</p>
 <p>Linux 内核提供了5个系统调用来实现 AIO：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/aio_abi.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_setup</span><span class="params">(<span class="keyword">unsigned</span> nr_events, <span class="keyword">aio_context_t</span> *ctxp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_destroy</span><span class="params">(<span class="keyword">aio_context_t</span> ctx)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_submit</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, <span class="keyword">long</span> nr, struct iocb **iocbpp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_cancel</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, struct iocb *, struct io_event *result)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_getevents</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, <span class="keyword">long</span> min_nr, <span class="keyword">long</span> nr, </span></span></span><br><span class="line"><span class="function"><span class="params">                 struct io_event *events, struct timespec *timeout)</span></span>;</span><br></pre></td></tr></table></figure>
 <p>每个提交到 AIO 上下文的 I/O 请求都由一个 I/O 控制块结构<code>struct iocb</code>来表示。</p>
@@ -707,7 +707,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IO模型"><span class="nav-number">2.</span> <span class="nav-text">IO模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AIO-系统调用"><span class="nav-number">3.</span> <span class="nav-text">AIO 系统调用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ABI-接口"><span class="nav-number">3.1.</span> <span class="nav-text">ABI 接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键数据结构"><span class="nav-number">3.2.</span> <span class="nav-text">关键数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIO-请求"><span class="nav-number">3.3.</span> <span class="nav-text">AIO 请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIO-上下文"><span class="nav-number">3.4.</span> <span class="nav-text">AIO 上下文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IO模型"><span class="nav-number">2.</span> <span class="nav-text">IO模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AIO-系统调用"><span class="nav-number">3.</span> <span class="nav-text">AIO 系统调用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#接口"><span class="nav-number">3.1.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键数据结构"><span class="nav-number">3.2.</span> <span class="nav-text">关键数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIO-请求"><span class="nav-number">3.3.</span> <span class="nav-text">AIO 请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIO-上下文"><span class="nav-number">3.4.</span> <span class="nav-text">AIO 上下文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -1032,13 +1032,35 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</script>
 
 
   
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
 
   
 
