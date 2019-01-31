@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。 作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
+<meta name="description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
 <meta name="keywords" content="Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 argparse 构建 Python 命令行工具">
 <meta property="og:url" content="http://guleilab.com/2019/01/17/python-argparser/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。 作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
+<meta property="og:description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-21T13:46:13.000Z">
+<meta property="og:updated_time" content="2019-01-28T02:17:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 argparse 构建 Python 命令行工具">
-<meta name="twitter:description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。 作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
+<meta name="twitter:description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
 
 
 
@@ -372,8 +372,7 @@
       
 
       
-        <p>目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。</p>
-<p>作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的<strong>argparse</strong>来实现参数的解析。本文章主要介绍该库的使用方法。</p>
+        <p>目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的<strong>argparse</strong>来实现参数的解析。本文章主要介绍该库的使用方法。</p>
 <a id="more"></a>
 <p>argparse 作为 Python 内置库，有详细的<a href="https://docs.python.org/2/library/argparse.html" target="_blank" rel="noopener">官方文档</a>和<a href="https://docs.python.org/2.7/howto/argparse.html" target="_blank" rel="noopener">官方教程</a>。</p>
 <p>argparse 的使用方法非常简单，共三步：</p>
@@ -387,7 +386,10 @@
 <p>argparse — Parser for command-line options, arguments and sub-commands</p>
 </blockquote>
 <p>这是 argparse 官方文档的标题，通过标题可以看到，argparse 可以解析命令行的<code>option/arguments/sub-commands</code>。</p>
-<h2 id="占位参数"><a href="#占位参数" class="headerlink" title="占位参数"></a>占位参数</h2><p>占位参数</p>
+<h2 id="占位参数"><a href="#占位参数" class="headerlink" title="占位参数"></a>占位参数</h2><p>占位参数即 argument，直接看例子。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">"echo"</span>)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line"><span class="keyword">print</span> args.echo</span><br></pre></td></tr></table></figure>
+<p>该代码的运行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> python prog.py</span></span><br><span class="line">usage: prog.py [-h] echo</span><br><span class="line">prog.py: error: the following arguments are required: echo</span><br><span class="line"><span class="meta">$</span><span class="bash"> python prog.py --<span class="built_in">help</span></span></span><br><span class="line">usage: prog.py [-h] echo</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  echo</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line"><span class="meta">$</span><span class="bash"> python prog.py foo</span></span><br><span class="line">foo</span><br></pre></td></tr></table></figure>
 <h2 id="可选参数"><a href="#可选参数" class="headerlink" title="可选参数"></a>可选参数</h2><h2 id="子命令"><a href="#子命令" class="headerlink" title="子命令"></a>子命令</h2>
       
     </div>
@@ -511,7 +513,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -533,7 +535,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

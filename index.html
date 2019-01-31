@@ -271,6 +271,318 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2019/01/30/linux-aio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gu Lei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/myface.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GuLei's Lab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/30/linux-aio/" itemprop="url">Linux 异步 I/O</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-30T13:58:04+08:00">
+                2019-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/01/30/linux-aio/" class="leancloud_visitors" data-flag-title="Linux 异步 I/O">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近看了一篇不错的文章<a href="https://oxnz.github.io/2016/10/13/linux-aio/#struct-iocb" target="_blank" rel="noopener">《Linux Asynchronous I/O》</a>，特别翻译分享出来。其中，我自己补充的内容会用引用标记出来。</p>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>异步 I/O (Asynchronous I/O, AIO) 是一种提升 I/O 操作性能的方法。AIO可以允许进程发起很多 I/O 操作，而不用阻塞或等待任何操作完成。稍后或在接收到 I/O 操作完成的通知时，进程就可以检查 I/O 操作的结果。</p>
+<p>在 Linux 系统上有三种方式来实现 AIO：</p>
+<ul>
+<li>内核系统调用</li>
+<li>对内核系统调用进行封装进而在用户空间提供服务，例如 <code>libaio</code></li>
+<li>完全在用户空间实现 AIO，并且不使用内核支持，例如<code>librt</code>和部分<code>libc</code></li>
+</ul>
+<h1 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h1><blockquote>
+<p>关于 IO 模型详见《UNIX 网络编程 卷1》的6.2节 “IO 模型”，一共介绍了 Unix 中的5种 IO 模型：</p>
+<ul>
+<li>阻塞式 I/O</li>
+<li>非阻塞式 I/O</li>
+<li>IO 复用 (select/poll)</li>
+<li>信号驱动式 I/O (SIGIO)</li>
+<li>异步 I/O (aio)</li>
+</ul>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">模型</th>
+<th style="text-align:center">阻塞</th>
+<th style="text-align:center">非阻塞</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">同步</td>
+<td style="text-align:center">read/write</td>
+<td style="text-align:center">read/write<br>(O_NONBLOCK)</td>
+</tr>
+<tr>
+<td style="text-align:center">异步</td>
+<td style="text-align:center">I/O multiplexing<br>(select/poll/epoll)</td>
+<td style="text-align:center">AIO</td>
+</tr>
+</tbody>
+</table>
+<h1 id="AIO-系统调用"><a href="#AIO-系统调用" class="headerlink" title="AIO 系统调用"></a>AIO 系统调用</h1><h2 id="ABI-接口"><a href="#ABI-接口" class="headerlink" title="ABI 接口"></a>ABI 接口</h2><p>AIO 系统系统调用入口点位于内核源码文件的<code>fs/aio.c</code>中。导出到用户空间的类型和常量都声明在<code>/usr/include/linux/aio_abi.h</code>这个头文件中。</p>
+<p>Linux 内核提供了5个系统调用来实现 AIO：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/aio_abi.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_setup</span><span class="params">(<span class="keyword">unsigned</span> nr_events, <span class="keyword">aio_context_t</span> *ctxp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_destroy</span><span class="params">(<span class="keyword">aio_context_t</span> ctx)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_submit</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, <span class="keyword">long</span> nr, struct iocb **iocbpp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_cancel</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, struct iocb *, struct io_event *result)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">io_getevents</span><span class="params">(<span class="keyword">aio_context_t</span> ctx, <span class="keyword">long</span> min_nr, <span class="keyword">long</span> nr, </span></span></span><br><span class="line"><span class="function"><span class="params">                 struct io_event *events, struct timespec *timeout)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>每个提交到 AIO 上下文的 I/O 请求都由一个 I/O 控制块结构<code>struct iocb</code>来表示。</p>
+<blockquote>
+<p>在传统的 I/O 模型中，有一个使用唯一句柄标识的 I/O 通道。在 UNIX 中，这些句柄是文件描述符（等同于文件、管道、套接字等等）。在阻塞 I/O 中，我们发起了一次传输操作，当传输操作完成或发生错误时，系统调用就会返回。</p>
+<p>在异步非阻塞 I/O 中，我们可以同时发起多个传输操作。这需要每个传输操作都有唯一的上下文，这样我们才能在它们完成时区分到底是哪个传输操作完成了。在 AIO 中，这是一个 <code>aiocb</code>（AIO I/O Control Block）结构。这个结构包含了有关传输的所有信息，包括为数据准备的用户缓冲区。在产生 I/O （称为完成）通知时，<code>aiocb</code> 结构就被用来惟一标识所完成的 I/O 操作。</p>
+</blockquote>
+<p><code>io_submit()</code>参数如下。注意，iocb 数据的成员是指向 iocb 的指针。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">aio_context_t ctx</td>
+<td style="text-align:center">AIO 上下文 ID</td>
+</tr>
+<tr>
+<td style="text-align:center">long nr</td>
+<td style="text-align:center">iocb 数组长度</td>
+</tr>
+<tr>
+<td style="text-align:center">struct iocb **iocbpp</td>
+<td style="text-align:center">iocb 数据缓冲区</td>
+</tr>
+</tbody>
+</table>
+<p><code>io_submit()</code>返回值有一下几种：</p>
+<ol>
+<li>$ret = nr$。是最好的情况，所有的 iocbs 都成功处理；</li>
+<li>$0 &lt; ret &lt; nr$。<code>io_submit()</code>系统调用从数组起始位置逐个处理所有的 iocb。如果提交的某个 iocb 失败了，该函数会停止处理后续 iocb，并返回失败 iocb 的索引值。<code>io_submit</code>函数不返回失败的具体原因。如果第一个 iocb 就失败，见后文；</li>
+<li>$ret &lt; 0​$。有两种情况会导致返回值小于0：<ul>
+<li>错误发生在迭代处理 iocb 之前。例如，AIO 上下文无效；</li>
+<li>第一个 iocb 提交失败。</li>
+</ul>
+</li>
+</ol>
+<p>在 iocb 提交成功后，进程可以继续做其他事情而不用等待 I/O 完成。对于每个完成的 I/O 请求（无论成功与否），内核都会创建一个 <code>io_event</code>结构。<code>io_getevents()</code>函数的功能就是获取 io_event 列表（和所有已完成的iocbs）。函数参数如下所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">aio_context_t ctx</td>
+<td style="text-align:center">AIO 上下文 ID</td>
+</tr>
+<tr>
+<td style="text-align:center">long min_nr</td>
+<td style="text-align:center">获取事件的最小值</td>
+</tr>
+<tr>
+<td style="text-align:center">long nr</td>
+<td style="text-align:center">获取事件的最大值</td>
+</tr>
+<tr>
+<td style="text-align:center">struct io_event *events</td>
+<td style="text-align:center">一个 io_event 的缓存区</td>
+</tr>
+<tr>
+<td style="text-align:center">struct timespec *timeout</td>
+<td style="text-align:center">超时时间。</td>
+</tr>
+</tbody>
+</table>
+<p>特别的，如果已完成 iocb 数量没有达到期望最小值，则函数会阻塞；而指定超时时间，即使没有获取足够的事件，则等待一定时间后返回，不会一直阻塞。超时时间设置为<code>NULL</code>意味着一直等待。如果想要函数完全不等待、立马返回，则要将<code>timespec</code>结构中的秒和纳秒结构都初始化为0。</p>
+<p><code>io_getevents</code>函数返回值如下：</p>
+<ol>
+<li>$ret = nr​$。从内核获取到了所有事件，这有可能意味着内核中还有更多挂起的事件；</li>
+<li>$min_nr &lt; ret &lt; nr$。目前内核中所有的可用事件都被读取且没有发生阻塞；</li>
+<li>$0 &lt; ret &lt; min_nr$。目前内核中所有的可用事件都被读取，同时阻塞用户声明的超时时间；</li>
+<li>$ret = 0$。目前内核中没有事件可以返回；</li>
+<li>$ret &lt; 0$。发生错误。</li>
+</ol>
+<h2 id="关键数据结构"><a href="#关键数据结构" class="headerlink" title="关键数据结构"></a>关键数据结构</h2><p><code>io_event</code>结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 该结构由 read() 函数从 /dev/aio 读取数据后返回. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">io_event</span> &#123;</span></span><br><span class="line">        __u64           data;           <span class="comment">/* 数据段，对应 iocb 的 aio_data 的值 */</span></span><br><span class="line">        __u64           obj;            <span class="comment">/* 事件对应的 iocb，指向对应 iocb 的指针 */</span></span><br><span class="line">        __s64           res;            <span class="comment">/* 对应 IO 请求的结果*/</span></span><br><span class="line">        __s64           res2;           <span class="comment">/* 对应 IO 请求的结果 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>iocb</code>结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 和用户空间通信的 off_t 是64bit，因此 iocb 的结构</span></span><br><span class="line"><span class="comment"> * 具体取决于库的实现来做大小的填充和错误的抽象。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">iocb</span> &#123;</span></span><br><span class="line">        <span class="comment">/* these are internal to the kernel/libc. */</span></span><br><span class="line">        __u64   aio_data;       <span class="comment">/* data to be returned in event's data */</span></span><br><span class="line">        __<span class="function">u32   <span class="title">PADDED</span><span class="params">(aio_key, aio_reserved1)</span></span>;</span><br><span class="line">                                <span class="comment">/* the kernel sets aio_key to the req # */</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 通用字段 */</span></span><br><span class="line">        __u16   aio_lio_opcode; <span class="comment">/* 请求类型，见后文 AIO 请求 */</span></span><br><span class="line">        __s16   aio_reqprio;</span><br><span class="line">        __u32   aio_fildes;</span><br><span class="line"></span><br><span class="line">        __u64   aio_buf;</span><br><span class="line">        __u64   aio_nbytes;</span><br><span class="line">        __s64   aio_offset;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 额外参数 */</span></span><br><span class="line">        __u64   aio_reserved2;  <span class="comment">/* <span class="doctag">TODO:</span> use this for a (struct sigevent *) */</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/* flags for the "struct iocb" */</span></span><br><span class="line">        __u32   aio_flags;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * if the IOCB_FLAG_RESFD flag of "aio_flags" is set, this is an</span></span><br><span class="line"><span class="comment">         * eventfd to signal AIO readiness to</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        __u32   aio_resfd;</span><br><span class="line">&#125;; <span class="comment">/* 64 bytes */</span></span><br></pre></td></tr></table></figure>
+<h2 id="AIO-请求"><a href="#AIO-请求" class="headerlink" title="AIO 请求"></a>AIO 请求</h2><p>上文<code>aio_lio_opcode</code>的值如下所示。结构中其他字段的语义取决于 AIO 请求的类型。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># /usr/include/linux/aio_abi.h</span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">        IOCB_CMD_PREAD = <span class="number">0</span>,</span><br><span class="line">        IOCB_CMD_PWRITE = <span class="number">1</span>,</span><br><span class="line">        IOCB_CMD_FSYNC = <span class="number">2</span>,</span><br><span class="line">        IOCB_CMD_FDSYNC = <span class="number">3</span>,</span><br><span class="line">        <span class="comment">/* These two are experimental.</span></span><br><span class="line"><span class="comment">         * IOCB_CMD_PREADX = 4,</span></span><br><span class="line"><span class="comment">         * IOCB_CMD_POLL = 5,</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        IOCB_CMD_NOOP = <span class="number">6</span>,</span><br><span class="line">        IOCB_CMD_PREADV = <span class="number">7</span>,</span><br><span class="line">        IOCB_CMD_PWRITEV = <span class="number">8</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>IOCB_CMD_PREAD</strong>。对应<code>pread()</code>系统调用；</p>
+</li>
+<li><p><strong>IOCB_CMD_PWRITE</strong>。对应 <code>pwrite()</code> 系统调用；</p>
+</li>
+<li><p><strong>IOCB_CMD_FSYNC</strong>。同步文件数据和元数据到稳定存储介质，对应<code>fsync()</code>系统调用；</p>
+</li>
+</ul>
+<blockquote>
+<p>fdatasync的功能与fsync类似，但是仅仅在必要的情况下才会同步metadata，因此可以减少一次IO写操作。那么，什么是“必要的情况”呢？根据man page中的解释：</p>
+<p>fdatasync does not flush modified metadata unless that metadata is needed in order to allow a subsequent data retrieval to be corretly handled.</p>
+<p>举例来说，文件的尺寸（st_size）如果变化，是需要立即同步的，否则OS一旦崩溃，即使文件的数据部分已同步，由于metadata没有同步，依然读不到修改的内容。而最后访问时间(atime)/修改时间(mtime)只要程序对两个参数没有精准要求，元数据是不需要每次都同步的。</p>
+</blockquote>
+<ul>
+<li><p><strong>IOCB_CMD_FDSYNC</strong>。同步文件数据和元数据到稳定存储介质，但是元数据只有在必要的时候才会同步，对应<code>fdatasync()</code>系统调用；</p>
+</li>
+<li><p><strong>IOCB_CMD_PREADV</strong>。对应<code>preadv()</code>系统调用；</p>
+</li>
+<li><p><strong>IOCB_CMD_PWRITEV</strong>。对应<code>pwritev()</code> 系统调用</p>
+</li>
+<li><p><strong>IOCB_CMD_NOOP</strong>。未使用。</p>
+</li>
+</ul>
+<h2 id="AIO-上下文"><a href="#AIO-上下文" class="headerlink" title="AIO 上下文"></a>AIO 上下文</h2><p>AIO context is a set of data structures that the kernel supports to perform AIO.</p>
+<p>Every process can have multiple AIO contextes and as such one needs an identificator for every AIO context in a process.</p>
+<p>A pointer to <code>ctx</code> variable is passed to <code>io_setup()</code> as a second argument and kernel fills this variable with a context identifier. Interestingly, <code>aio_context_t</code> is actually just an <code>unsigned long</code> defined in the kernel (<code>linux/aio_abi.h</code>) like that:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef unsigned long aio_context_t;</span><br></pre></td></tr></table></figure>
+<p>The first argument of <code>io_setup()</code> function is the maximum number of requests that can simultaneously reside in the context.</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><p><a href="https://www.ibm.com/developerworks/cn/linux/l-async/index.html" target="_blank" rel="noopener">使用异步 I/O 大大提高应用程序的性能</a></p>
+</li>
+<li><p><a href="http://www.10tiao.com/html/609/201705/2652240070/1.html" target="_blank" rel="noopener">Linux kernel AIO这个奇葩</a></p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://guleilab.com/2019/01/22/nfs-compilation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -819,8 +1131,7 @@
 
       
         
-          <p>目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。</p>
-<p>作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的<strong>argparse</strong>来实现参数的解析。本文章主要介绍该库的使用方法。</p>
+          <p>目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的<strong>argparse</strong>来实现参数的解析。本文章主要介绍该库的使用方法。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/01/17/python-argparser/#more" rel="contents">
@@ -1625,163 +1936,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2018/07/29/LDAP3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Gu Lei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/myface.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="GuLei's Lab">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/29/LDAP3/" itemprop="url">LDAP 系列（3）：Samba over LDAP</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-29T13:56:10+08:00">
-                2018-07-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/29/LDAP3/" class="leancloud_visitors" data-flag-title="LDAP 系列（3）：Samba over LDAP">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>本次将介绍如何将 Samba 和 LDAP 结合使用，使用 LDAP 对 Samba 账户进行统一管理。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/07/29/LDAP3/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1836,7 +1990,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1858,7 +2012,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
