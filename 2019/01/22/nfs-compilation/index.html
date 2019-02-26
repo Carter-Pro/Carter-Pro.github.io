@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="NFS 在 Redhat 内核中默认以模块的方式编译安装，因此编译 NFS 代码无需编译整个内核，仅需要编译 NFS 模块及其相关模块，然后将模块进行替换即可。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-22T06:26:10.000Z">
+<meta property="og:updated_time" content="2019-02-26T01:50:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在 CentOS&#x2F;Redhat 环境中编译 NFS">
 <meta name="twitter:description" content="NFS 在 Redhat 内核中默认以模块的方式编译安装，因此编译 NFS 代码无需编译整个内核，仅需要编译 NFS 模块及其相关模块，然后将模块进行替换即可。">
@@ -395,17 +395,17 @@
 <p>编译内核模块步骤如下：</p>
 <ul>
 <li>进入模块目录，如<code>fs/nfs</code>；</li>
-<li>运行<code>make CONFIG_XXX=m -C &lt;kernel_source_path&gt; M=$(pwd) modules</code>。其中，<code>CONFIG_XXX</code>是模块在内核配置项中的名称，<code>&lt;kernel_source_path&gt;</code>是内核源码地址。</li>
+<li>运行<code>make CONFIG_XXX=m -C &lt;kernel_devel_path&gt; M=$(pwd) modules</code>。其中，<code>CONFIG_XXX</code>是模块在内核配置项中的名称，<code>&lt;kernel_devel_path&gt;</code>是内核开发包的位置，一般位于<code>/usr/src/kernels/&lt;unamr -r&gt;</code>，<strong>注意区分该位置和内核源码位置</strong>。</li>
 </ul>
 <p>模块就像 rpm 软件包一样，可以安装、卸载，模块和模块之间也存在依赖关系。命令如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看所有被加载的模块</span></span><br><span class="line">lsmod</span><br><span class="line">lsmod |grep &lt;module_name&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装模块</span></span><br><span class="line">insmod &lt;module_ko&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载模块</span></span><br><span class="line">rmmod &lt;module_name&gt;</span><br></pre></td></tr></table></figure>
 <h2 id="编译依赖模块"><a href="#编译依赖模块" class="headerlink" title="编译依赖模块"></a>编译依赖模块</h2><p>NFS 模块依赖于<code>fscache</code>模块。先通过<code>lsmod |grep fscache</code>查看该模块是否安装，如已安装可以跳过本节继续进行。</p>
 <p>进入源码目录<code>fs/fscache</code>，使用如下命令进行编译。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make CONFIG_FSCACHE=m -C &lt;kernel_sourece_path&gt; M=&lt;kernel sourece path&gt;/fs/fscache modules</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make CONFIG_FSCACHE=m -C &lt;kernel_devel_path&gt; M=&lt;kernel sourece path&gt;/fs/fscache modules</span><br></pre></td></tr></table></figure>
 <p>编译完成后安装模块：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insmod &lt;kernel sourece path&gt;/fs/fscache/fscache.ko</span><br></pre></td></tr></table></figure>
 <h2 id="编译-NFS-1"><a href="#编译-NFS-1" class="headerlink" title="编译 NFS"></a>编译 NFS</h2><p>进入源码目录，客户端进入<code>fs/nfs</code>，服务端进入<code>fs/nfsd</code>，运行编译模块命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> client</span></span><br><span class="line">make CONFIG_NFS_FS=m -C &lt;kernel sourece path&gt; M=&lt;kernel sourece path&gt;/fs/nfs modules</span><br><span class="line"><span class="meta">#</span><span class="bash"> server</span></span><br><span class="line">make CONFIG_NFSD=m -C &lt;kernel sourece path&gt; M=&lt;kernel sourece path&gt;/fs/nfsd modules</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> client</span></span><br><span class="line">make CONFIG_NFS_FS=m -C &lt;kernel_devel_path&gt; M=&lt;kernel sourece path&gt;/fs/nfs modules</span><br><span class="line"><span class="meta">#</span><span class="bash"> server</span></span><br><span class="line">make CONFIG_NFSD=m -C &lt;kernel_devel_path&gt; M=&lt;kernel sourece path&gt;/fs/nfsd modules</span><br></pre></td></tr></table></figure>
 <p>编译完成后，<code>fs/nfs</code>目录下会生成<code>nfs.ko/nfsv3.ko/nfsv4.ko</code>，<code>fs/nfsd</code>目录下会生成<code>nfsd.ko</code>。</p>
 <h2 id="安装-NFS-模块"><a href="#安装-NFS-模块" class="headerlink" title="安装 NFS 模块"></a>安装 NFS 模块</h2><p>在安装模块之前，需要查看该模块是否已被系统加载：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsmod |grep nfs</span><br></pre></td></tr></table></figure>
