@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://guleilab.com/2019/04/27/fuse-performance-1/架构.png">
 <meta property="og:image" content="http://guleilab.com/2019/04/27/fuse-performance-1/表1.png">
 <meta property="og:image" content="http://guleilab.com/2019/04/27/fuse-performance-1/图2.png">
-<meta property="og:updated_time" content="2019-04-27T07:07:44.000Z">
+<meta property="og:updated_time" content="2019-04-27T07:10:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用户空间文件系统性能(1)">
 <meta name="twitter:description" content="最近在研究 FUSE 文件系统，看到一篇不错的论文《To FUSE or Not to FUSE: Performance of User-Space File Systems》，翻译出来研究一下。 论文比较长，本章翻译前半部分，主要包括 FUSE 的架构和实现细节。">
@@ -441,8 +441,7 @@
 </blockquote>
 <p>为了支持 <code>splice</code>，FUSE以两种形式之一表示其缓冲区：（1）由用户守护程序的地址空间中的指针标识的常规内存区域，或（2）由文件描述符指向的内核空间内存。如果用户空间文件系统实现了<code>write_buf()</code>方法，则 FUSE 从<code>/dev/fuse</code>读取数据，并以包含文件描述符的缓冲区的形式将数据直接传递给此方法。 FUSE 拼接包含多页数据的 <code>WRITE</code> 请求。类似的逻辑适用于对具有两页以上数据的 <code>READ</code> 请求的回复。</p>
 <h4 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h4><p>由于并行越来越受欢迎，FUSE 增加了多线程支持。在多线程模式下，FUSE的守护进程以一个线程开始。如果 <em>pending</em> 队列中有两个以上的可用请求，则 FUSE 会自动生成其他线程。每个线程一次处理一个请求。处理完请求后，每个线程检查目前是否有超过10个线程；如果有，则该线程退出。 FUSE 库创建的线程数没有明确的上限。但是由于以下两个原因存在隐式的限制：（1）默认情况下，<em>pending</em> 队列中一次最多只有 <code>max_background</code> 个异步请求; （2）<code>pending</code> 队列中的同步请求数取决于用户进程生成的 I/O 活跃数的总量。此外，对于每个 <code>INTERRUPT</code> 和 <code>FORGET</code> 请求，都会生成一个新线程。在没有中断支持且 <code>FORGET</code> 很少的典型系统中，FUSE 守护程序线程的总数最多为 $12+number of requests in pending queue$。</p>
-<h4 id="写回缓存和最大写"><a href="#写回缓存和最大写" class="headerlink" title="写回缓存和最大写"></a>写回缓存和最大写</h4><p>The basic write behavior of FUSE is synchronous and only 4KB of data is sent to the user daemon for writing. This results in performance problems on certain workloads; when copying a large file into a FUSE file system, /bin/cp indirectly causes every 4KB of data to be sent to userspace synchronously. The solution FUSE implemented was to make FUSE’s page cache support a write-back policy and then make writes asynchronous. With that change, file data can be pushed to the user daemon in larger chunks of max write size (limited to 32 pages).</p>
-<p>FUSE 的写操作默认是同步的，且一次发送到用户守护程序的数据量只有 4KB。 这会导致某些工作负载下出现性能瓶颈；使用<code>/bin/cp</code>程序将一个大文件复制到 FUSE 文件系统时，数据会被切分成若干个4KB，然后顺序、同步发送到用户空间。 FUSE 为了解决这个问题，实现了页面缓存的回写策略，然后写入变为异步。 利用该机制，文件数据可以以大块的格式()推送到用户守护程序，目前现在现在为32个page，即128KB。</p>
+<h4 id="写回缓存和最大写"><a href="#写回缓存和最大写" class="headerlink" title="写回缓存和最大写"></a>写回缓存和最大写</h4><p>FUSE 的写操作默认是同步的，且一次发送到用户守护程序的数据量只有 4KB。 这会导致某些工作负载下出现性能瓶颈；使用<code>/bin/cp</code>程序将一个大文件复制到 FUSE 文件系统时，数据会被切分成若干个4KB，然后顺序、同步发送到用户空间。 FUSE 为了解决这个问题，实现了页面缓存的回写策略，然后写入变为异步。 利用该机制，文件数据可以以大块的格式()推送到用户守护程序，目前现在现在为32个page，即128KB。</p>
 
       
     </div>
