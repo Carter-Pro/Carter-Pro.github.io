@@ -87,14 +87,14 @@
 <meta property="og:site_name" content="GuLei&#39;s Lab">
 <meta property="og:description" content="最近在研究 FUSE 文件系统，看到一篇不错的论文《To FUSE or Not to FUSE: Performance of User-Space File Systems》，翻译出来研究一下。 论文比较长，本章翻译前半部分，主要包括 FUSE 的架构和实现细节。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://guleilab.com/2019/04/Library/Application%20Support/typora-user-images/image-20190426160102085.png">
-<meta property="og:image" content="http://guleilab.com/2019/04/Library/Application%20Support/typora-user-images/image-20190426162723351.png">
-<meta property="og:image" content="http://guleilab.com/2019/04/Library/Application%20Support/typora-user-images/image-20190427123228159.png">
-<meta property="og:updated_time" content="2019-04-27T07:04:40.000Z">
+<meta property="og:image" content="http://guleilab.com/2019/04/27/fuse-performance-1/架构.png">
+<meta property="og:image" content="http://guleilab.com/2019/04/27/fuse-performance-1/表1.png">
+<meta property="og:image" content="http://guleilab.com/2019/04/27/fuse-performance-1/图2.png">
+<meta property="og:updated_time" content="2019-04-27T07:07:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用户空间文件系统性能(1)">
 <meta name="twitter:description" content="最近在研究 FUSE 文件系统，看到一篇不错的论文《To FUSE or Not to FUSE: Performance of User-Space File Systems》，翻译出来研究一下。 论文比较长，本章翻译前半部分，主要包括 FUSE 的架构和实现细节。">
-<meta name="twitter:image" content="http://guleilab.com/2019/04/Library/Application%20Support/typora-user-images/image-20190426160102085.png">
+<meta name="twitter:image" content="http://guleilab.com/2019/04/27/fuse-performance-1/架构.png">
 
 
 
@@ -402,12 +402,12 @@
 <p>我们使用 FUSE 框架开发了一个简单的可堆叠文件系统，将其构建在 EXT4 文件系统上，然后评估、对比其性能与原生Ext4的性能。我们使用了各种各样的微观、宏观工作负载，并且针对不同硬件使用了 FUSE 的基本和优化配置。 我们发现， FUSE 的性能取决于工作负载和硬件，某些情况下 FUSE 性能与 EXT4接近，但在最坏的情况下 FUSE 的可能会比 EXT4 慢3倍。 接下来，我们为 FUSE 设计并构建了一个丰富的测试系统来收集详细的性能指标。 这些统计数据适用于任何基于 FUSE 的系统。 我们使用这个测试系统来识别 FUSE 瓶颈，并解释为什么，例如，为什么 FUSE 的性能在不同的工作负载下有巨大的差异。</p>
 <h2 id="2-FUSE-设计"><a href="#2-FUSE-设计" class="headerlink" title="2. FUSE 设计"></a>2. FUSE 设计</h2><p>FUSE(Filesystem in Userspace)是使用最广的用户空间文件系统框架。保守估计目前至少有100多个基于 FUSE 的文件系统可以在 Internet 上被找到。虽然仍然有其他用户空间文件系统框架，我们仍然选择了最受欢迎的 FUSE。</p>
 <p>虽然很多人因为 FUSE 提供的简单易用的 API 选择了 FUSE 来实现文件系统，但是几乎没人讨论 FUSE 的内部架构、实现和性能。为了评估 FUSE 的性能，我们不仅要了解 FUSE 的架构设计，还要了解一些实现细节。在本节中，我们首先介绍FUSE 的基础知识，然后解释某些重要的实现细节。FUSE 适用于多种操作系统，我们选择了使用最广泛的 Linux。我们在 Linux kernel 4.1.13 进行代码分析和实验。我们还使用了commit id 为 386b1b 的  FUSE 库。该版本在FUSE v2.9.4之上，提交了几个重要的补丁，我们不希望从我们的评估中排除这些补丁。 在撰写本文时，我们手动检查了所有新提交，并确认自从所选版本发布以来没有向FUSE添加任何新的主要功能或改进。</p>
-<h3 id="2-1-架构"><a href="#2-1-架构" class="headerlink" title="2.1 架构"></a>2.1 架构</h3><p><img src="/2019/04/27/fuse-performance-1/../../Library/Application%20Support/typora-user-images/image-20190426160102085.png" alt="image-20190426160102085"></p>
+<h3 id="2-1-架构"><a href="#2-1-架构" class="headerlink" title="2.1 架构"></a>2.1 架构</h3><p><img src="/2019/04/27/fuse-performance-1/架构.png" alt="image-20190426160102085"></p>
 <p>FUSE 包含内核模块和一个用户层的守护进程。内核模块加载时被注册成 Linux 虚拟文件系统的一个 fuse 文件系统驱动。这个 fuse 驱动充当不同用户空间文件系统的代理。除此之外，在注册一个新 fuse 文件系统时，FUSE 的内核模块还注册了一个<code>/dev/fuse</code>的块设备。该设备作为用户空间 FUSE 守护进程和内核通信的接口。通常，守护进程从<code>/dev/fuse</code>读取 FUSE 请求，处理，然后将回复写入<code>/dev/fuse</code></p>
 <p>图1显示了 FUSE 的架构。当用户应用在一个挂在的 FUSE 文件系统上执行某些操作时，VFS 将操作路由至 FUSE 的内核驱动。该驱动创建了一个 FUSE 请求结构体，并把该结构体放到了 FUSE 的队列中。此时，执行操作的进程通常处于等待状态。FUSE 的用户空间守护进程通过读取<code>/dev/fuse</code>将请求从内核队列中取出，并且处理请求。处理请求通常需要重新进入内核：例如，在一个堆叠文件 FUSE 文件系统中，守护进程会提交操作到底层文件系统中(例如 EXT4)；或者在基于块的 FUSE 系统中，守护进程对一个块设备读写数据。当处理完请求后，FUSE 守护进程将响应写会<code>/dev/fuse</code>；FUSE 的内核驱动会将请求标记为 completed，然后唤醒原用户进程。</p>
 <p>应用程序调用的某些文件系统操作可以不与用户空间守护进程通信。例如，读取一个文件被内核缓存的内容，无需转发至 FUSE 驱动。</p>
 <h3 id="2-2-实现细节"><a href="#2-2-实现细节" class="headerlink" title="2.2 实现细节"></a>2.2 实现细节</h3><p>我们需要讨论一些 FUSE 的实现细节：用户-内核通信协议，库和 API，内核 FUSE 队列，拼接，多线程和缓存写回。</p>
-<p><img src="/2019/04/27/fuse-performance-1/../../Library/Application%20Support/typora-user-images/image-20190426162723351.png" alt="image-20190426162723351"></p>
+<p><img src="/2019/04/27/fuse-performance-1/表1.png" alt="image-20190426162723351"></p>
 <h4 id="用户-内核协议"><a href="#用户-内核协议" class="headerlink" title="用户-内核协议"></a>用户-内核协议</h4><p>当 FUSE 内核驱动和用户空间守护进程通信时，会构造一个 FUSE 请求结构体。请求的类型取决于传输的文件系统操作。表1中列出了 FUSE 全部43种请求类型，并以语义进行了分组。如表1所示，大部分请求类型和传统 VFS 文件操作有直观映射：忽略如 CREATE/READ 这些操作，我们把重点放在那些不太直观的请求类型上，这些请求在表1中加粗标记。</p>
 <p>当一个文件系统被挂载内核会构造一个<code>INIT</code>请求。此时用户空间守护进程会和内核协商(1)通信协议版本，(2)支持的特定功能集，(3)参数设定。相反，当文件系统卸载时内核发送<code>DESTROY</code>请求。当收到该请求时，守护进程应当执行所有必要的清理工作。由于守护程序正常退出，此会话不再收到来自内核的请求，后续对<code>/dev/fuse</code>的读取都将返回0。</p>
 <p>当任何先前发送的请求被取消时，例如一个读请求被用户中止，内核会发送一个<code>INTERRUPT</code>请求。每个请求都有一个唯一的序号，因此<code>INTERRUPT</code>可以用该序号干掉对应的请求。序号由内核分配，同时被用作用户空间回复时定位完成的消息。每个请求还包含一个node ID: 一个无符号的64位整形，用来在内核和用户空间标识一个 inode。路径到inode的转换由<code>LOOKUP</code>请求执行。 每次查找现有的inode（或者创建一个新的inode）时，内核都会将inode保存在inode缓存中。 从dcache中删除inode时，内核会将<code>FORGET</code>请求传递给用户空间守护程序。 此时，守护程序可能决定回收相应的数据结构。 <code>BATCH FORGET</code>允许内核使用请求删除多个inode。</p>
@@ -416,7 +416,7 @@
 <p>当内核判断一个用户进程是否有权访问某个文件时，它会生成一个<code>ACCESS</code>请求。 通过处理此请求，FUSE 守护程序可以实现自定义的权限逻辑。 但是，通常用户使用默认权限选项挂载FUSE，该选项允许内核根据标准Unix属性（所有权和权限位）授予或拒绝对文件的访问权限。 在这种情况下，内核不会生成<code>ACCESS</code>请求。</p>
 <h3 id="库和-API"><a href="#库和-API" class="headerlink" title="库和 API"></a>库和 API</h3><p>从概念上讲，FUSE库包含两个级别。低级库负责（1）接收和解析来自内核的请求，（2）向内核发送回复，（3）配置和挂载文件系统，以及（4）隐藏内核和用户空间之间潜在的版本差异。 此部分导出为 <em>Low-level FUSE API</em>。</p>
 <p><em>High-level Fuse API</em> 构建在 Low-level FUSE API 之上，允许开发人员忽略文件路径到inode映射的实现细节。 为了简化了代码开发，high-level API中既不存在inode也不存在查找操作。因此，所有高级API方法直接在文件路径上操作。 高级API还可以处理请求中断，同时也提供了其他方便的功能：例如，开发人员可以使用更常见的<code>chown()</code>，<code>chmod()</code>和<code>truncate()</code>方法，避免使用低级的<code>setattr()</code>。 文件系统开发人员必须通过平衡操作灵活性与开发简易性来决定使用哪个API。</p>
-<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p><img src="/2019/04/27/fuse-performance-1/../../Library/Application%20Support/typora-user-images/image-20190427123228159.png" alt="image-20190427123228159"></p>
+<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p><img src="/2019/04/27/fuse-performance-1/图2.png" alt="image-20190427123228159"></p>
 <p>在2.1节中，我们提到 FUSE 的内核模块种有一个请求队列。 实际上， FUSE 在内核中维护了五个队列，如图2所示：<em>inperrupts</em>，<em>forgets</em>，<em>pending</em>，<em>processing</em> 和 <em>backgroupd</em>。一个请求在任何时候都只属于一个队列。 FUSE 将 <code>INTERRUPT</code> 请求放入 <em>inperrupts</em> 队列，<code>FORGET</code> 请求放在 <em>forgets</em> 队列中，同步请求（例如，元数据）放在 <em>pending</em> 队列中。当文件系统守护程序从<code>/dev/fuse</code>读取请求时，请求将按如下方式发送到用户的守护程序：</p>
 <ol>
 <li>优先处理中断队列中的请求，保证中断请求在任何其他请求之前将被发送到用户空间。</li>
