@@ -79,18 +79,23 @@
 
 
 
-<meta name="description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
+<meta name="description" content="都说”人生苦短，我用 Python”，但是不了解 Python 编码的问题绝对会陷入痛苦深渊。">
 <meta name="keywords" content="Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用 argparse 构建 Python 命令行工具">
-<meta property="og:url" content="http://guleilab.com/2019/01/17/python-argparser/index.html">
+<meta property="og:title" content="Python 编码">
+<meta property="og:url" content="http://guleilab.com/2019/04/29/python-encode/index.html">
 <meta property="og:site_name" content="GuLei&#39;s Lab">
-<meta property="og:description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
+<meta property="og:description" content="都说”人生苦短，我用 Python”，但是不了解 Python 编码的问题绝对会陷入痛苦深渊。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-28T12:36:41.000Z">
+<meta property="og:image" content="http://guleilab.com/2019/04/29/python-encode/ascii.png">
+<meta property="og:image" content="http://guleilab.com/2019/04/29/python-encode/strtouc.png">
+<meta property="og:image" content="http://guleilab.com/2019/04/29/python-encode/str-unicode.png">
+<meta property="og:image" content="http://guleilab.com/2019/04/29/python-encode/server.png">
+<meta property="og:updated_time" content="2019-04-29T14:37:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用 argparse 构建 Python 命令行工具">
-<meta name="twitter:description" content="目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的argparse来实现参数的解析。本文章主要介绍该库的使用方法。">
+<meta name="twitter:title" content="Python 编码">
+<meta name="twitter:description" content="都说”人生苦短，我用 Python”，但是不了解 Python 编码的问题绝对会陷入痛苦深渊。">
+<meta name="twitter:image" content="http://guleilab.com/2019/04/29/python-encode/ascii.png">
 
 
 
@@ -120,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://guleilab.com/2019/01/17/python-argparser/"/>
+  <link rel="canonical" href="http://guleilab.com/2019/04/29/python-encode/"/>
 
 
 
 
 
-  <title>使用 argparse 构建 Python 命令行工具 | GuLei's Lab</title>
+  <title>Python 编码 | GuLei's Lab</title>
   
 
 
@@ -272,7 +277,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2019/01/17/python-argparser/">
+    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2019/04/29/python-encode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Lei">
@@ -289,7 +294,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用 argparse 构建 Python 命令行工具</h1>
+          <h1 class="post-title" itemprop="name headline">Python 编码</h1>
         
 
         <div class="post-meta">
@@ -301,8 +306,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T22:31:56+08:00">
-                2019-01-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-29T16:34:20+08:00">
+                2019-04-29
               </time>
             
 
@@ -341,7 +346,7 @@
 
           
           
-             <span id="/2019/01/17/python-argparser/" class="leancloud_visitors" data-flag-title="使用 argparse 构建 Python 命令行工具">
+             <span id="/2019/04/29/python-encode/" class="leancloud_visitors" data-flag-title="Python 编码">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -372,47 +377,72 @@
       
 
       
-        <p>目前在公司需要构建一套环境部署工具，在测试阶段该工具只提供 CLI 接口进行测试，需要通过不同参数的支持实现不同功能和参数设定。作为一个脚本自然选择 Python 作为开发语言，为了实现工具的小巧，使用内置的<strong>argparse</strong>来实现参数的解析。本文章主要介绍该库的使用方法。</p>
+        <p>都说”人生苦短，我用 Python”，但是不了解 Python 编码的问题绝对会陷入痛苦深渊。</p>
 <a id="more"></a>
-<p>argparse 作为 Python 内置库，有详细的<a href="https://docs.python.org/2/library/argparse.html" target="_blank" rel="noopener">官方文档</a>和<a href="https://docs.python.org/2.7/howto/argparse.html" target="_blank" rel="noopener">官方教程</a>。</p>
-<p>argparse 的使用方法非常简单，共三步：</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>最近在开发公司后台模块的时候发现审计日志打出了乱码，经过排查发现写审计模块的哥们虽然考虑到了编码，但是对所有消息一股脑进行了编码。那些乱码就是二次编码造成的。当发现问题的时候，我才发现很多人包括自己对 Python 的编码都是似懂非懂。所以，本文针 Python 编码进行讨论。</p>
+<h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><p><strong>计算机存储的是二进制，0和1</strong>。</p>
+<p>因此，无论是英文字母还是中文，在计算机存储的时候都要转化成0和1组成的二进制串。</p>
+<h3 id="老美的-ASCII"><a href="#老美的-ASCII" class="headerlink" title="老美的 ASCII"></a>老美的 ASCII</h3><p>学过 C 语言的对 ASCII（American Standard Code for Information Interchange，美国信息交换标准代码）一定不陌生。</p>
+<p>在老美的世界里，字符非常有限，52个字母(大小写)、10个数字、标点符号和控制符等加起来不过一百多，给每个编个号，8个比特位就表示了。</p>
+<p><img src="/2019/04/29/python-encode/ascii.png" alt="image-20190429213753384"></p>
+<h3 id="ASCII-的局限性"><a href="#ASCII-的局限性" class="headerlink" title="ASCII 的局限性"></a>ASCII 的局限性</h3><p>随着计算机的发展和普及，各个国家在发展计算机的同时发现自己的语言用 ASCII 码不能完成编码。以中国为例，汉语光常见的汉字就成千上万，ASCII 码的设计只能表达256个字符，完全不够用。因此，西欧设计了基于 ASCII 的 EASCII 码，中国设计了大家都熟悉的 GB2312，又在此基础上设计了 GBK。</p>
+<h3 id="多种编码的问题"><a href="#多种编码的问题" class="headerlink" title="多种编码的问题"></a>多种编码的问题</h3><p>多种编码带来的问题就像同一个项目，每个人对同一个功能都开发了自己专有的接口，那么在最后功能集成的时候必须识别消息是从哪个模块来的，对全世界的信息大互联造成了困扰。</p>
+<p>因此统一联盟国际组织提出了 <strong>Unicode</strong> 编码，它为每种语言中的每个字符设定了统一并且唯一的二进制编码，以满足跨语言、跨平台进行文本转换、处理的要求。Unicode 有两种格式：USC-2 和 USC-4。其中，USC-2用两个字节编码，也就是16个比特位；而 USC-4用4个字节编码，也就是32个比特</p>
+<p>但是 Unicode 也带来一些问题。</p>
+<p>比如字符”A”，使用 ASCII 进行编码明明可以用一个字节，但是用Unicode 就要2个字节。也就是说，如果我为了通用性使用 Unicode在网络上传输一部原本用 ASCII 码编码 只有 1MB 的英文小说，网络流量会有 2MB 。</p>
+<p>另一方面，Unicode 只规定了如何编码，没有规定如何传输、保存这个编码，那么对于一个二进制的串，计算机也一脸懵逼，我是把他按 ASCII 编码还是 GBK 编码呢？</p>
+<h3 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h3><p>UTF-8 是一种针对 Unicode 的、广泛应用于互联网的变长字符编码。其最主要的优点就是根据具体情况用1-4个字节来表示一个字符，以节省空间。</p>
+<p>对于 UTF-8 我们需要记住以下几点：</p>
 <ol>
-<li>创建 <code>ArgumentParser()</code>对象；</li>
-<li>调用 <code>add_argument()</code>方法添加参数；</li>
-<li>使用 <code>parse_args()</code>解析添加的参数。</li>
+<li>UTF-8 是对 Unicode 的一种编码：Unicode 是一种十六进制编码，UTF-8 是二进制编码；</li>
+<li>UTF-8 可以表示ASCII 码，ASCII 是 UTF-8 的子集。</li>
 </ol>
-<p>用 argparse 实现多样的命令行工具，关键就在添加参数这个函数，其参数可选项非常多。</p>
-<h1 id="argpaser-的功能"><a href="#argpaser-的功能" class="headerlink" title="argpaser 的功能"></a>argpaser 的功能</h1><blockquote>
-<p>argparse — Parser for command-line options, arguments and sub-commands</p>
-</blockquote>
-<p>这是 argparse 官方文档的标题，通过标题可以看到，argparse 可以解析命令行的<code>option/arguments/sub-commands</code>。</p>
-<p>官方的文档和网上的资料很详细，本节不会介绍具体的参数和细节用法。本节会介绍参数的三种类型，以便各位在开发自己工具的时候可以做到有的放矢。</p>
-<h1 id="占位参数"><a href="#占位参数" class="headerlink" title="占位参数"></a>占位参数</h1><p>占位参数即 argument，顾名思义即这个参数是必须选的。</p>
-<p>以 Linux 创建本地用户的命令<code>useradd</code>为例子：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ useradd -h</span><br><span class="line">usage: useradd [option] LOGIN</span><br></pre></td></tr></table></figure>
-<p>其中，<strong>LOGIN</strong>就是一个占位参数。现在我们用 argparser 写一个高仿的<code>useradd</code>程序，直接看代码。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">"LOGIN"</span>)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line"><span class="keyword">print</span> args.LOGIN</span><br></pre></td></tr></table></figure>
-<p>该代码的运行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> python useradd.py -h</span></span><br><span class="line">usage: useradd.py [-h] LOGIN</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  LOGIN</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br></pre></td></tr></table></figure>
-<p>OK，我们已经写出来<code>useradd</code>程序类似的 help 信息了，那么怎么获取传入参数的值呢？</p>
-<p><code>add_argument</code>会把参数名注册为解析器实例的成员变量，注意代码第5行。使用效果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ python useradd.py gulei</span><br><span class="line">gulei</span><br></pre></td></tr></table></figure>
-<h1 id="可选参数"><a href="#可选参数" class="headerlink" title="可选参数"></a>可选参数</h1><p>继续<code>useradd</code>的例子，该程序有很多<code>option</code>，比如指定用户的用户组<code>-g</code>、用户的 id<code>-u</code>等等，如果不指定则使用默认值。这种模式的参数就是可选参数。除此之外，我们可以发现大部分命令行工具的可选参数都是以<code>-</code>或者<code>--</code>开头的，argparser 也是如此，我们再次以<code>useradd</code>程序为例，增加<code>-u</code>参数允许用户指定用户 ID。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">"LOGIN"</span>)</span><br><span class="line">parser.add_argument(<span class="string">'-u'</span>, default=<span class="number">1000</span>)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line"><span class="keyword">print</span> <span class="string">"%s's uid is %s"</span> % (args.LOGIN, args.u)</span><br></pre></td></tr></table></figure>
-<p>代码运行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ python useradd.py -h</span><br><span class="line">usage: useradd.py [-h] [-u U] LOGIN</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  LOGIN</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --<span class="built_in">help</span>  show this <span class="built_in">help</span> message and <span class="built_in">exit</span></span><br><span class="line">  -u U</span><br></pre></td></tr></table></figure>
-<p>代码传入参数运行结果：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ python useradd.py gulei</span><br><span class="line">gulei<span class="string">'s uid is 1000</span></span><br><span class="line"><span class="string">$ python useradd.py -u 1024 gulei</span></span><br><span class="line"><span class="string">gulei'</span>s uid is 1024</span><br><span class="line">$ python useradd.py -u=2048 gulei</span><br><span class="line">gulei<span class="string">'s uid is 2048</span></span><br></pre></td></tr></table></figure>
-<h1 id="子命令"><a href="#子命令" class="headerlink" title="子命令"></a>子命令</h1><p>对于<code>useradd</code>程序子命令是更高级的用法了，目前该程序是使用不到的。但是没有需求我们就创造需求。</p>
-<p>假设我们要让<code>useradd</code>程序能设置用户的年龄，提供出类似<code>useradd set_age &lt;username&gt; &lt;age&gt;</code>的命令行工具。</p>
-<p>构建一层子命令就是对解析器增加一套<code>subparsers</code>，具体看代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line"><span class="comment"># 构建子解析器集合，子解析器命名为 command</span></span><br><span class="line">subparsers = parser.add_subparsers(help=<span class="string">'USERADD SUBCOMMAND'</span>, dest=<span class="string">'command'</span>)</span><br><span class="line"><span class="comment"># 构建年龄解析器</span></span><br><span class="line">age_parser = subparsers.add_parser(<span class="string">'set_age'</span>, help=<span class="string">"Set user's age"</span>)</span><br><span class="line"><span class="comment"># 构建性别解析器</span></span><br><span class="line">gender_parser = subparsers.add_parser(<span class="string">'set_gender'</span>, help=<span class="string">"Set user's gender"</span>)</span><br><span class="line">age_parser.add_argument(<span class="string">'name'</span>)</span><br><span class="line">age_parser.add_argument(<span class="string">'age'</span>, type=int)</span><br><span class="line">gender_parser.add_argument(<span class="string">'name'</span>)</span><br><span class="line">gender_parser.add_argument(<span class="string">'gender'</span>, type=str)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> args.command == <span class="string">'set_age'</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"%s's age is %d"</span> % (args.name, args.age)</span><br><span class="line"><span class="keyword">elif</span> args.command == <span class="string">'set_gender'</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"%s is a %s"</span> % (args.name, args.gender)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-<p>可以看到命令帮助选择如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ python useradd.py -h</span><br><span class="line">usage: useradd.py [-h] &#123;set_age,set_gender&#125; ...</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  &#123;set_age,set_gender&#125;  USERADD SUBCOMMAND</span><br><span class="line">    set_age             Set user<span class="string">'s age</span></span><br><span class="line"><span class="string">    set_gender          Set user'</span>s gender</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --<span class="built_in">help</span>            show this <span class="built_in">help</span> message and <span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
-<p>命令执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ python useradd.py set_age gulei 26</span><br><span class="line">gulei<span class="string">'s age is 26</span></span><br><span class="line"><span class="string">$ python useradd.py set_gender gulei man</span></span><br><span class="line"><span class="string">gulei is a man</span></span><br></pre></td></tr></table></figure>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>更多的实现细节我们可以去 Google 和阅读文档，但是在清楚了使用模式之后，我们可以随心所欲得设计程序。</p>
-<p>三种模式可以叠加使用，实现更复杂的 CLI 工具。</p>
+<h2 id="编码之间的关系"><a href="#编码之间的关系" class="headerlink" title="编码之间的关系"></a>编码之间的关系</h2><p><strong>我们需要把 Unicode 看做各种编码的桥梁</strong>。</p>
+<p>不同的字符编码集如UTF-8、GBK、ISO8859-1等等的字符串通过一个中间桥梁unicode来转换。</p>
+<h2 id="Python-编码"><a href="#Python-编码" class="headerlink" title="Python 编码"></a>Python 编码</h2><h3 id="一个常见错误"><a href="#一个常见错误" class="headerlink" title="一个常见错误"></a>一个常见错误</h3><p>由于 Python 的诞生时间比 Unicode 早，因此 Python 的默认编码是 ASCII 码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> sys</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sys.getdefaultencoding()</span><br><span class="line"><span class="string">'ascii'</span></span><br></pre></td></tr></table></figure>
+<p>所以，我们在 Python 源代码文件中如果不显式指定编码的话，将出现语法错误</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#test.py</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"你好"</span></span><br></pre></td></tr></table></figure>
+<p>运行 python test.py 就会出现如下错误：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">File “test.py”, line <span class="number">1</span> yntaxError: Non-ASCII character ‘\xe4′ <span class="keyword">in</span> file test.py on line <span class="number">1</span>, but no encoding declared; see http://www.python.org/ ps/pep<span class="number">-0263.</span>html <span class="keyword">for</span> details</span><br></pre></td></tr></table></figure>
+<p>因此，一般学习 Python 都会在第一节课要求你在文件中加入以下编码格式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf8</span></span><br><span class="line">或者</span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br></pre></td></tr></table></figure>
+<h3 id="Python-字符串"><a href="#Python-字符串" class="headerlink" title="Python 字符串"></a>Python 字符串</h3><p>在 Python 中，和字符串相关的数据类型分别是 <strong>str</strong> 和 <strong>unicode</strong>， 他们都是 basestring 的子类，可见他们是两种不同类型的字符串对象，他们之间以 <code>encode</code> 和 <code>decode</code>两种方法进行转换。</p>
+<p>其区别在于：</p>
+<ol>
+<li>str 是以 UTF-8/ASCII 等编码格式编码后的表示；</li>
+<li>unicode 是 str 以指定编码方式解码后的表示。</li>
+</ol>
+<p><img src="/2019/04/29/python-encode/strtouc.png" alt="image-20190429222425672"></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#从str类型的字符串转换到unicode</span></span><br><span class="line">s.decode(encoding)   =====&gt;&lt;type 'str'&gt; to &lt;type 'unicode'&gt;</span><br><span class="line"><span class="comment">#从str类型的字符串转换到unicode</span></span><br><span class="line">u.encode(encoding)  =====&gt;&lt;type 'unicode'&gt; to &lt;type 'str'&gt;</span><br></pre></td></tr></table></figure>
+<p>问题：现在假设我想要把一个gbk字符编码的str对象转换为utf-8的str对象，该如何转换呢？</p>
+<p>现在默认我是在windows下操作，操作系统的字符编码默认是gbk的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>s=<span class="string">"你好"</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>s</span><br><span class="line"><span class="string">'\xc4\xe3\xba\xc3'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>s1 = s.decode(<span class="string">'gbk'</span>).encode(<span class="string">'utf-8'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>s1</span><br><span class="line"><span class="string">'\xe4\xbd\xa0\xe5\xa5\xbd'</span></span><br></pre></td></tr></table></figure>
+<h3 id="str-和-unicode-的用处"><a href="#str-和-unicode-的用处" class="headerlink" title="str 和 unicode 的用处"></a>str 和 unicode 的用处</h3><p>计算机系统通用的字符编码工作方式：在计算机内存中，统一使用 Unicode 编码，当需要保存到硬盘或者需要传输的时候，就转换为 UTF-8 编码。</p>
+<p>例如，用记事本编辑的时候，从文件读取的 UTF-8 字符被转换为 Unicode 字符到内存里，编辑完成后，保存的时候再把 Unicode 转换为UTF-8保存到文件。</p>
+<p><img src="/2019/04/29/python-encode/str-unicode.png" alt="image-20190429222033548"></p>
+<p>再例如，浏览网页的时候，服务器会把动态生成的Unicode内容转换为UTF-8再传输到浏览器：</p>
+<p><img src="/2019/04/29/python-encode/server.png" alt="image-20190429222828125"></p>
+<h3 id="乱码"><a href="#乱码" class="headerlink" title="乱码"></a>乱码</h3><p>所以出现乱码的原因都是：字符经过不同编码解码，在编码的过程中使用的编码格式不一致。</p>
+<p>比如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'好'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="string">'\xe5\xa5\xbd'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b=a.decode(<span class="string">'utf-8'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line"><span class="string">u'\u597d'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c=b.encode(<span class="string">'gbk'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c</span><br><span class="line"><span class="string">'\xba\xc3'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> c</span><br><span class="line">��</span><br></pre></td></tr></table></figure>
+<p>所以遇到乱码，是因为在设计时没有用统一的编码，考虑：</p>
+<ol>
+<li>碰到问题，问一下自己，我现在是哪种编码；</li>
+<li>同一种编码才能交互，那我应该是哪种编码。</li>
+</ol>
+<p>在开发过程中养成以下习惯：</p>
+<ul>
+<li>确定一种内部编码；</li>
+<li>内部编码的选择优先级如下：程序必须使用的编码、第三方包使用的编码、你喜欢的编码、Unicode；</li>
+<li>在输出时再更改到特定的编码；</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="https://www.zhihu.com/question/31833164" target="_blank" rel="noopener">Python 编码为什么那么蛋疼？</a></li>
+<li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001431664106267f12e9bef7ee14cf6a8776a479bdec9b9000" target="_blank" rel="noopener">字符串和编码</a></li>
+<li><a href="http://python.jobbole.com/85482/" target="_blank" rel="noopener">五分钟战胜 Python 字符编码</a></li>
+<li><a href="https://foofish.net/understanding-python-charset.html" target="_blank" rel="noopener">理解Python字符集编码</a></li>
+</ol>
 
       
     </div>
@@ -443,8 +473,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/14/consul-distributed-lock/" rel="next" title="使用 Consul 实现分布式锁">
-                <i class="fa fa-chevron-left"></i> 使用 Consul 实现分布式锁
+              <a href="/2019/04/27/fuse-performance-1/" rel="next" title="用户空间文件系统性能(1)">
+                <i class="fa fa-chevron-left"></i> 用户空间文件系统性能(1)
               </a>
             
           </div>
@@ -452,10 +482,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/21/linux-kernel-compilation/" rel="prev" title="编译 CentOS/Redhat 内核">
-                编译 CentOS/Redhat 内核 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -591,7 +617,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#argpaser-的功能"><span class="nav-number">1.</span> <span class="nav-text">argpaser 的功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#占位参数"><span class="nav-number">2.</span> <span class="nav-text">占位参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可选参数"><span class="nav-number">3.</span> <span class="nav-text">可选参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#子命令"><span class="nav-number">4.</span> <span class="nav-text">子命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码"><span class="nav-number">2.</span> <span class="nav-text">编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#老美的-ASCII"><span class="nav-number">2.1.</span> <span class="nav-text">老美的 ASCII</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ASCII-的局限性"><span class="nav-number">2.2.</span> <span class="nav-text">ASCII 的局限性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多种编码的问题"><span class="nav-number">2.3.</span> <span class="nav-text">多种编码的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UTF-8"><span class="nav-number">2.4.</span> <span class="nav-text">UTF-8</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码之间的关系"><span class="nav-number">3.</span> <span class="nav-text">编码之间的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python-编码"><span class="nav-number">4.</span> <span class="nav-text">Python 编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一个常见错误"><span class="nav-number">4.1.</span> <span class="nav-text">一个常见错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python-字符串"><span class="nav-number">4.2.</span> <span class="nav-text">Python 字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#str-和-unicode-的用处"><span class="nav-number">4.3.</span> <span class="nav-text">str 和 unicode 的用处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#乱码"><span class="nav-number">4.4.</span> <span class="nav-text">乱码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
