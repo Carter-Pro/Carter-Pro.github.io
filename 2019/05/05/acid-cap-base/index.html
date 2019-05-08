@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="分布式," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在《从 Paxos 到 Zookeeper：分布式一致性原理和实践》里有一章”从ACID到CAP/BASE”，作者从单机事务的 ACID 讲到分布式事务，然后突然扯到CAP/BASE 理论。那么 ACID 和 CAP 有什么关系，为什么会放在一起讨论，作者并没有表述清楚。本文顺着这二者的关系进行讨论。">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谈谈 ACID、CAP 和 BASE">
+<meta property="og:url" content="http://guleilab.com/2019/05/05/acid-cap-base/index.html">
+<meta property="og:site_name" content="GuLei&#39;s Lab">
+<meta property="og:description" content="在《从 Paxos 到 Zookeeper：分布式一致性原理和实践》里有一章”从ACID到CAP/BASE”，作者从单机事务的 ACID 讲到分布式事务，然后突然扯到CAP/BASE 理论。那么 ACID 和 CAP 有什么关系，为什么会放在一起讨论，作者并没有表述清楚。本文顺着这二者的关系进行讨论。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://guleilab.com/2019/05/05/acid-cap-base/cap.png">
+<meta property="og:updated_time" content="2019-05-08T14:45:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="谈谈 ACID、CAP 和 BASE">
+<meta name="twitter:description" content="在《从 Paxos 到 Zookeeper：分布式一致性原理和实践》里有一章”从ACID到CAP/BASE”，作者从单机事务的 ACID 讲到分布式事务，然后突然扯到CAP/BASE 理论。那么 ACID 和 CAP 有什么关系，为什么会放在一起讨论，作者并没有表述清楚。本文顺着这二者的关系进行讨论。">
+<meta name="twitter:image" content="http://guleilab.com/2019/05/05/acid-cap-base/cap.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guleilab.com/2019/05/05/acid-cap-base/"/>
+
+
+
+
+
+  <title>谈谈 ACID、CAP 和 BASE | GuLei's Lab</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-131193630-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?095489b0f12695789c4713516235d16c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">GuLei's Lab</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2019/05/05/acid-cap-base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gu Lei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/myface.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GuLei's Lab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">谈谈 ACID、CAP 和 BASE</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-05T17:38:27+08:00">
+                2019-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分布式/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/05/05/acid-cap-base/" class="leancloud_visitors" data-flag-title="谈谈 ACID、CAP 和 BASE">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在《从 Paxos 到 Zookeeper：分布式一致性原理和实践》里有一章”从ACID到CAP/BASE”，作者从单机事务的 ACID 讲到分布式事务，然后突然扯到CAP/BASE 理论。那么 ACID 和 CAP 有什么关系，为什么会放在一起讨论，作者并没有表述清楚。本文顺着这二者的关系进行讨论。</p>
+<a id="more"></a>
+<h1 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h1><h2 id="ACID-原则"><a href="#ACID-原则" class="headerlink" title="ACID 原则"></a>ACID 原则</h2><p><a href="https://zh.wikipedia.org/wiki/ACID" target="_blank" rel="noopener">ACID</a> 是指数据库管理系统在写入或更新资料的过程中，为保证事务（transaction）是正确可靠的，所必须具备的四个特性：</p>
+<ul>
+<li>原子性（atomicity）</li>
+<li>一致性（consistency）</li>
+<li>隔离性（isolation）</li>
+<li>持久性（durability）</li>
+</ul>
+<h2 id="CAP-理论"><a href="#CAP-理论" class="headerlink" title="CAP 理论"></a>CAP 理论</h2><p>来自Berkerly的Eric Brewer教授提出了一个著名的<a href="https://en.wikipedia.org/wiki/CAP_theorem" target="_blank" rel="noopener">CAP理论</a>：一致性（Consistency），可用性（Availability）以及分区容忍性（Partition tolerance）三者不能同时满足。</p>
+<ul>
+<li><strong>一致性</strong>：对某个指定的客户端来说，读操作能返回最新的写操作。对于数据分布在不同节点上的数据上来说，如果在某个节点更新了数据，那么在其他节点如果都能读取到这个最新的数据，那么就称为强一致，如果有某个节点没有读取到，那就是分布式不一致；</li>
+<li><strong>可用性</strong>：非故障的节点在合理的时间内返回合理的响应(不是错误和超时的响应)。可用性的两个关键一个是合理的时间，一个是合理的响应。合理的时间指的是请求不能无限被阻塞，应该在合理的时间给出返回。合理的响应指的是系统应该明确返回结果并且结果是正确的，这里的正确指的是比如应该返回50，而不是返回40。</li>
+<li><strong>分区容忍性</strong>：当出现网络分区后，系统能够继续工作。打个比方，这里个集群有多台机器，有台机器网络出现了问题，但是这个集群仍然可以正常工作。</li>
+</ul>
+<h2 id="BASE-理论"><a href="#BASE-理论" class="headerlink" title="BASE 理论"></a>BASE 理论</h2><p>Eric Brewer在1997发表的论文 <a href="https://courses.cs.washington.edu/courses/cse454/13wi/papers/cluster_scalable.pdf" target="_blank" rel="noopener">Cluster-Based Scalable Network Services</a> 中第一次提出 BASE 的概念；eBay的架构师Dan Pritchett 在 2008 年发表文章 <a href="http://dl.acm.org/citation.cfm?id=1394128" target="_blank" rel="noopener">BASE: An AcidAlternative</a> 中第一次明确提出的 BASE 理论。</p>
+<p>BASE是Basically Available（基本可用）、Soft state（软状态）和Eventually consistent（最终一致性）三个短语的简写。</p>
+<p>BASE是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的总结，是基于CAP定理逐步演化而来的，其核心思想是即使无法做到强一致性（Strong consistency），但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性（Eventual consistency）。</p>
+<h3 id="基本可用"><a href="#基本可用" class="headerlink" title="基本可用"></a>基本可用</h3><p>基本可用是指分布式系统在出现不可预知故障的时候，允许损失部分可用性：</p>
+<ul>
+<li>响应时间上的损失</li>
+<li>功能上的损失(降级页面)</li>
+</ul>
+<h3 id="弱状态"><a href="#弱状态" class="headerlink" title="弱状态"></a>弱状态</h3><p>弱状态也称为软状态，和硬状态相对，是指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程存在延时。</p>
+<h3 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h3><p>最终一致性强调的是系统中所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要实时保证系统数据的强一致性。</p>
+<h1 id="为什么要谈-ACID"><a href="#为什么要谈-ACID" class="headerlink" title="为什么要谈 ACID"></a>为什么要谈 ACID</h1><p>BASE 和 CAP 的提出就是体系架构从单机到分布式的大背景下。</p>
+<p><a href="http://dl.acm.org/citation.cfm?id=1394128" target="_blank" rel="noopener">BASE: An AcidAlternative</a> 文章的背景是讨论数据库分片对分布式事务的需求。文章使用 2PC (两阶段提交)来提供跨越多个数据库实例的ACID保证。但是引入 2PC 的直接影响就是可用性下降。假设数据分布在两个数据库实例上，每个数据库实例的可用性是 99.9%，那么数据库分片后可用性为：</p>
+<script type="math/tex; mode=display">
+100-((100-99.9)+(100-99.9))=99.8</script><p>作为商用软件，可用性下降是不可容忍的。因此，作者才引出了 CAP 理论，进而提出 BASE，通过放松 ACID 的严格一致性，获得系统可用性和可扩展性的提升。</p>
+<p>我认为， 目前所有在讨论 CAP 的时候带上 ACID，一方面想说明<strong>在分布式环境下，必须在数据一致性和可用性之间做出取舍</strong>；另一方面，可能就是想单纯装一下。</p>
+<h1 id="CAP-理论的”三选二”"><a href="#CAP-理论的”三选二”" class="headerlink" title="CAP 理论的”三选二”"></a>CAP 理论的”三选二”</h1><p><img src="/2019/05/05/acid-cap-base/cap.png" style="zoom:50%"></p>
+<p>我们把 C、A、P 两两组合起来，可以得到关注点不同的系统：</p>
+<ul>
+<li><strong>CA</strong>：这样的系统关注一致性和可用性，它需要非常严格的全体一致性协议，比如上文提到的”两段提交”(2PC)。CA 系统不能容忍网络错误或者节点错误，一旦出现这样的问题，整个系统就会拒绝写请求，因为它并不知道是对面的那个节点宕机还是网络错误。唯一安全的做法就是把自己变成只读的。</li>
+<li><strong>CP</strong>：这样的系统关注一致性和分区容忍性。它关注的是系统里大多数人的一致性协议，比如：Paxos 算法 (Quorum 类的算法)。这样的系统只需要保证大多数节点数据一直，而少数的节点会在没有同步到最新版数据时编程不可用的状态。这样能够提供一部分的可用性。</li>
+<li><strong>AP</strong>：这样的系统关心可用性和分区容忍性。因此，这样的系统不能达成一致性，需要给出数据冲突，给出数据冲突就需要维护数据版本(Dynamo)。</li>
+</ul>
+<h1 id="CAP-的误解"><a href="#CAP-的误解" class="headerlink" title="CAP 的误解"></a>CAP 的误解</h1><p>现在很多人在进行分布式架构设计时言必谈 CAP，但是还是有很多人对 CAP 理论有误解，连 CAP 理论的作者都直言 CAP 理论的”三选二”约束一直存在着误导性。</p>
+<p>这个约束过分简单化了各性质之间的相互关系。我们有必要辨析其中的细节。因此，我们对自己提出两个问题：</p>
+<ol>
+<li><strong>P</strong>是必选项吗？</li>
+<li><strong>CA</strong>一定要二选一吗？</li>
+</ol>
+<h2 id="P-是必选项吗"><a href="#P-是必选项吗" class="headerlink" title="P 是必选项吗"></a>P 是必选项吗</h2><p>在分布式系统中，分区是由于网络问题或节点宕机导致的。这就导致程序员们就直面了一种状况：分区不会频繁出现，但是一定会出现。因此分布式系统的分区容忍性是必选项。</p>
+<p>对于分布式系统工程实践，CAP理论更合适的描述是：<strong>在满足分区容错的前提下，没有算法能同时满足数据一致性和服务可用性</strong>。</p>
+<h2 id="CA-何如取舍"><a href="#CA-何如取舍" class="headerlink" title="CA 何如取舍"></a>CA 何如取舍</h2><p>但是由于分区很少发生，那么在系统不存在分区的情况下牺牲 C 或 A 我们都会觉得很心疼，怎么办呢？</p>
+<p>CAP定理证明中的一致性指<strong>线性一致性，即强一致性</strong>。强一致性要求多节点组成的被调要能像单节点一样运作、操作具备原子性，数据在时间、时序上都有要求。如果放宽这些要求，还有其他一致性类型：</p>
+<ul>
+<li><strong>序列一致性</strong>(sequential consistency)：不要求时序一致，A 操作先于 B 操作，在 B 操作后如果所有调用端读操作得到 A 操作的结果，满足序列一致性；</li>
+<li><strong>最终一致性</strong>(eventual consistency)：放宽对时间的要求，在被调完成操作响应后的某个时间点，被调多个节点的数据最终达成一致。</li>
+</ul>
+<p>可用性在 CAP 定理里指所有读写操作必须要能终止，实际应用中从主调、被调两个不同的视角，可用性具有不同的含义。当网络分区出现时，主调可以只支持读操作，通过牺牲部分可用性达成数据一致。</p>
+<p><em>工程实践中，较常见的做法是通过异步拷贝副本(asynchronous replication)、Quorum/NRW，实现在调用端看来数据强一致、被调端最终一致，在调用端看来服务可用、被调端允许部分节点不可用(或被网络分隔)的效果。</em></p>
+<p>CAP 理论的这三种性质都可以在程度上衡量，并不是非黑即白的有或无。可用性显然是在 0% 到 100% 之间连续变化的，一致性分很多级别，连分区也可以细分为不同含义，如系统内的不同部分对于是否存在分区可以有不一样的认知。CAP 实践应将目标定为针对具体的应用，在合理范围内最大化数据一致性和可用性。</p>
+<p>这样的思路延伸为如何规划<strong>分区期间的操作和分区之后的恢复</strong>，从而启架构师和程序员加深对 CAP 的认识，跳出由于 CAP 理论的表述而产生的思维局限。</p>
+<h2 id="无法忽略的网络延迟"><a href="#无法忽略的网络延迟" class="headerlink" title="无法忽略的网络延迟"></a>无法忽略的网络延迟</h2><p>CAP 理论的经典解释，是忽略网络延迟的，但<strong>在实际中延迟和分区紧密相关</strong>。CAP 从理论到实践落地的场景是如何在出现分区时对待已发生的操作：</p>
+<ul>
+<li><p>降低系统的可用性<strong>取消操作</strong>；</p>
+</li>
+<li><p>冒着系统损失一致性的风险<strong>继续操作</strong>。</p>
+</li>
+</ul>
+<p>依靠多次尝试通信的方法来达到一致性（比如 Paxos 算法或者两阶段事务提交），仅仅是推迟了决策的时间，系统终究要做一个决定。无限期地尝试下去，本身就是选择一致性牺牲可用性的表现。</p>
+<p>因此以实际效果而言，<strong>分区相当于对通信提出的时限要求</strong>。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在 C 和 A 之间做出选择。这就<strong>从延迟的角度抓住了设计的核心问题：分区两侧是否在无通信的情况下继续其操作？</strong></p>
+<p>从这个实用的观察角度出发可以导出若干重要的推论：</p>
+<ol>
+<li>分区并不是全体节点的一致见解，因为有些节点检测到了分区，有些可能没有；</li>
+<li>检测到分区的节点即进入<strong>分区模式</strong>——这是优化 C 和 A 的核心环节。</li>
+<li>系统设计者可以根据期望中的响应时间设置时限。但是需要注意：时限越短，系统进入分区模式越频繁，其中有些时候并不一定真的发生了分区的情况，可能只是网络变慢而已。</li>
+</ol>
+<p>因此，有时候在跨区域的系统中放弃强一致性来避免保持数据一致所带来的高延迟是非常有意义的。</p>
+<h2 id="跳出-CAP"><a href="#跳出-CAP" class="headerlink" title="跳出 CAP"></a>跳出 CAP</h2><p>CAP 理论的这三种性质都可以在程度上衡量，并不是非黑即白的有或无。可用性显然是在 0% 到 100% 之间连续变化的，一致性分很多级别，连分区也可以细分为不同含义，如系统内的不同部分对于是否存在分区可以有不一样的认知。CAP 实践应将目标定为针对具体的应用，在合理范围内最大化数据一致性和可用性。</p>
+<p>因为在分区没有出现的时候，我们完全不需要考虑分区容忍性，可以选择 CA；当分区出现之后，我们可以根据需求在 C 和 A 之间进行取舍。</p>
+<p>因此，思路延伸为如何规划<strong>分区期间的操作和分区之后的恢复</strong>，从而启架构师和程序员加深对 CAP 的认识，跳出由于 CAP 理论的表述而产生的思维局限。例如，Oracle数据库的DataGuard复制组件包含三种模式：</p>
+<ul>
+<li>最大保护模式（Maximum Protection）：即强同步复制模式，写操作要求主库先将操作日志（数据库的redo / undo日志）同步到至少一个备库才可以返回客户端成功。这种模式保证即使主库出现无法恢复的故障，比如硬盘损坏，也不会丢失数据；</li>
+<li>最大性能模式（Maximum Performance）：即异步复制模式，写操作只需要在主库上执行成功就可以返回客户端成功，主库上的后台线程会将重做日志通过异步的方式复制到备库。这种方式保证了性能及可用性，但是可能丢失数据；</li>
+<li>最大可用性模式（Maximum Availability）：上述两种模式的折衷。正常情况下相当于最大保护模式，如果主备之间的网络出现故障，切换为最大性能模式。</li>
+</ul>
+<h1 id="CAP-实践"><a href="#CAP-实践" class="headerlink" title="CAP 实践"></a>CAP 实践</h1><h2 id="管理分区"><a href="#管理分区" class="headerlink" title="管理分区"></a>管理分区</h2><p>上文谈的，CAP 理论实践的关键是对分区情况进行管理。其关键是以非常明确、公开的方式去管理分区，不仅需要主动察觉分区的发生，还需要为分区期间所有可能受侵害的不变性约束预备专门的恢复过程和计划。管理分区有三个步骤：</p>
+<ul>
+<li><p>检测到分区开始；</p>
+</li>
+<li><p>明确进入分区模式，限制某些操作；</p>
+</li>
+<li><p>当通信恢复后启动分区恢复过程。</p>
+</li>
+</ul>
+<p>当系统进入到分区模式，它有两种可行的策略：一是限制部分操作，会削弱可用性；二是额外记录一些有利于后面分区恢复的操作信息。</p>
+<p>系统可通过持续尝试恢复通信来察觉分区何时结束，当通信恢复后开始恢复一致性，以及补偿在系统分区期间程序产生的错误。</p>
+<h2 id="分区后的操作选择"><a href="#分区后的操作选择" class="headerlink" title="分区后的操作选择"></a>分区后的操作选择</h2><p>决定限制哪些操作，主要取决于系统需要维持哪些不变性约束。<br>在给定了不变性约束条件之后，我们需要决定在分区模式下，是否坚持不触动某项不变性约束，或者通过分区恢复不变性约束。<br>举一个工作中的例子，某告警系统向 MongoDB 插入告警信息，告警信息具备唯一性。当发生分区时 MongoDB 产生脑裂，在互不感知的情况下可能系统可能会想两个数据库分区插入相同告警信息。<br>那么这时候我们有两个选择：</p>
+<ol>
+<li>在感知到分区时不插入告警信息；</li>
+<li>在分区时仍然插入告警，在分区结束后合并重复告警。<br>因此，程序员应该清楚有哪些不变性约束、在分区期间必须维护哪些和哪些可以通过恢复保证不变性。<br>特别的，在分区模式的讨论中，我们应将关注点放在有明确意义的原子操作而非单纯的读写，原因是操作的抽象级别越高对不变性约束的影响通常就越容易分析清楚。</li>
+</ol>
+<h2 id="分区恢复"><a href="#分区恢复" class="headerlink" title="分区恢复"></a>分区恢复</h2><p>到了某个时刻，通信恢复，分区结束。由于每一侧在分区期间都是可用的，其状态仍继续向前进展，但是分区会推迟某些操作并侵犯一些不变性约束。<br>在分区结束的时刻，当前状态不如历史记录有价值，因为通过历史记录，系统可以判断哪些操作违反了不变性约束，产生了何种外在的后果（如发送了响应给用户）。因此，系统分区模式下记录日志是有帮助的。<br>在分区恢复过程中，必须解决两个问题：</p>
+<ol>
+<li>分区两侧的状态最终必须保持一致；</li>
+<li>并且必须补偿分区期间产生的错误。</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>当系统中存在分区，不应该盲目地牺牲一致性或可用性。运用以上讨论的方法，通过细致地管理分区期间的不变性约束，两方面的性质都可以取得最佳的表现。</p>
+<p>对理论的讨论就到这里为止，但是从理论到实践的落地还有很多工作要做。引入 CAP 实践毕竟不像引入 ACID 事务那么简单，实施的时候需要对过去的策略进行全面的考虑，最佳的实施方案极大地依赖于具体服务的不变性约束和操作细节。多研究现有的优秀分布式系统，分析其设计理念和对 CAP 的实现，可以更快地成长。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><a href="https://www.infoq.cn/article/cap-twelve-years-later-how-the-rules-have-changed" target="_blank" rel="noopener">CAP 理论十二年回顾：”规则”变了</a></li>
+<li><a href="https://juejin.im/post/5b5a0bf9f265da0f6523913b" target="_blank" rel="noopener">再有人问你分布式事务，把这篇扔给他</a></li>
+<li><a href="https://coolshell.cn/articles/10910.html" target="_blank" rel="noopener">分布式系统的事务处理</a></li>
+<li><a href="https://pt-br.facebook.com/notes/cloudera/cap-confusion-problems-with-partition-tolerance/385772907002/" target="_blank" rel="noopener">CAP Confusion: Problems with ‘partition tolerance’</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/29/python-encode/" rel="next" title="Python 编码">
+                <i class="fa fa-chevron-left"></i> Python 编码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/myface.jpeg"
+                alt="Gu Lei" />
+            
+              <p class="site-author-name" itemprop="name">Gu Lei</p>
+              <p class="site-description motion-element" itemprop="description">这里是谷雷的实验室</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景知识"><span class="nav-number">1.</span> <span class="nav-text">背景知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ACID-原则"><span class="nav-number">1.1.</span> <span class="nav-text">ACID 原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAP-理论"><span class="nav-number">1.2.</span> <span class="nav-text">CAP 理论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BASE-理论"><span class="nav-number">1.3.</span> <span class="nav-text">BASE 理论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本可用"><span class="nav-number">1.3.1.</span> <span class="nav-text">基本可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#弱状态"><span class="nav-number">1.3.2.</span> <span class="nav-text">弱状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终一致性"><span class="nav-number">1.3.3.</span> <span class="nav-text">最终一致性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么要谈-ACID"><span class="nav-number">2.</span> <span class="nav-text">为什么要谈 ACID</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CAP-理论的”三选二”"><span class="nav-number">3.</span> <span class="nav-text">CAP 理论的”三选二”</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CAP-的误解"><span class="nav-number">4.</span> <span class="nav-text">CAP 的误解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#P-是必选项吗"><span class="nav-number">4.1.</span> <span class="nav-text">P 是必选项吗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CA-何如取舍"><span class="nav-number">4.2.</span> <span class="nav-text">CA 何如取舍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无法忽略的网络延迟"><span class="nav-number">4.3.</span> <span class="nav-text">无法忽略的网络延迟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳出-CAP"><span class="nav-number">4.4.</span> <span class="nav-text">跳出 CAP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CAP-实践"><span class="nav-number">5.</span> <span class="nav-text">CAP 实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#管理分区"><span class="nav-number">5.1.</span> <span class="nav-text">管理分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区后的操作选择"><span class="nav-number">5.2.</span> <span class="nav-text">分区后的操作选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区恢复"><span class="nav-number">5.3.</span> <span class="nav-text">分区恢复</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gu Lei</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+
+  <span class="post-meta-divider">|</span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">总访客<span id="busuanzi_value_site_uv"></span>人</span>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("KHYUiycr5l3mK71gpL9xJhp1-gzGzoHsz", "lzTTm112I4IxpGeHJVysDM6o");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
