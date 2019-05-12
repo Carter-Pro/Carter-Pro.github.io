@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="存储," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="翻译文章《WHAT’S SO BAD ABOUT POSIX I/O?》">
+<meta name="keywords" content="存储">
+<meta property="og:type" content="article">
+<meta property="og:title" content="糟糕的 POSIX IO">
+<meta property="og:url" content="http://guleilab.com/2019/05/12/bad-posix-io/index.html">
+<meta property="og:site_name" content="GuLei&#39;s Lab">
+<meta property="og:description" content="翻译文章《WHAT’S SO BAD ABOUT POSIX I/O?》">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://guleilab.com/2019/05/12/bad-posix-io/performance-of-concurrent-file-op.png">
+<meta property="og:image" content="http://guleilab.com/2019/05/12/bad-posix-io/file-tf-size.png">
+<meta property="og:updated_time" content="2019-05-12T14:54:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="糟糕的 POSIX IO">
+<meta name="twitter:description" content="翻译文章《WHAT’S SO BAD ABOUT POSIX I/O?》">
+<meta name="twitter:image" content="http://guleilab.com/2019/05/12/bad-posix-io/performance-of-concurrent-file-op.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guleilab.com/2019/05/12/bad-posix-io/"/>
+
+
+
+
+
+  <title>糟糕的 POSIX IO | GuLei's Lab</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-131193630-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?095489b0f12695789c4713516235d16c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">GuLei's Lab</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://guleilab.com/2019/05/12/bad-posix-io/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gu Lei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/myface.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GuLei's Lab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">糟糕的 POSIX IO</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-12T15:51:37+08:00">
+                2019-05-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/存储/" itemprop="url" rel="index">
+                    <span itemprop="name">存储</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/05/12/bad-posix-io/" class="leancloud_visitors" data-flag-title="糟糕的 POSIX IO">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>翻译文章<a href="https://www.nextplatform.com/2017/09/11/whats-bad-posix-io/" target="_blank" rel="noopener">《WHAT’S SO BAD ABOUT POSIX I/O?》</a></p>
+<a id="more"></a>
+<p>目前，POSIX I/O 是大规模系统 I/O 性能限制的最主要因素。淘汰 POSIX I/O 是高性能计算专家们的共同愿望。为了提升大规模系统的 I/O 危机，专家们从 I/O 转发层、用户空间 I/O、新 I/O 接口等不同角度做出了补救。</p>
+<p>然而，我们很少听到为什么 POSIX I/O 对扩展性和性能如此不利，以及下一代高性能 I/O 模型需要如何改变。为了回到为什么 POSIX I/O 制约了现有系统的 I/O 性能和未来超大规模 I/O 系统的设计空间，最大的办法是研究一下 POSIX I/O 真正的含义。</p>
+<h2 id="理解今天的-POSIX-I-O"><a href="#理解今天的-POSIX-I-O" class="headerlink" title="理解今天的 POSIX I/O"></a>理解今天的 POSIX I/O</h2><p>从抽象的层次来讲，我们通常把<strong>POSIX I/O API</strong> 和 <strong>POSIX I/O semantics(POSIX IO 语义)</strong>混为一谈，统称为 POSIX I/O。</p>
+<p>POSIX I/O API 是我们最熟悉的，因为它就是应用程序读写数据调用的接口，包括<code>open()/close()/read()/write()/lseek()</code>等等。POSIX I/O API 是当今应用程序和程序库的一个必要组成部分。</p>
+<p>POSIX I/O 语义相较之下熟悉的人就很少了，它定义了在 API 被调用的时候什么事情是可以保证的、什么事情是不能保证的。例如，当<code>write()</code>调用正常返回时，POSIX IO 语义保证了数据一定被提交到了某个持久性存储中。虽然<code>write()</code>是对数据是否写入的保证看起来很简单，但是这些语义会在大规模系统中引发严重的性能问题，尽管这些保证对于系统来说不是必要的。</p>
+<p>API 及其语义的组合产生了POSIX I/O 的一些不同特性，这些特性对可伸缩性和性能具有可测量的不利影响。</p>
+<h2 id="POSIX-I-O-是有状态的"><a href="#POSIX-I-O-是有状态的" class="headerlink" title="POSIX I/O 是有状态的"></a>POSIX I/O 是有状态的</h2><p>一个典型的 IO 程序的流程如下：</p>
+<ol>
+<li>使用<code>open()</code>打开文件；</li>
+<li>然后<code>read()</code>文件数据；</li>
+<li>接着<code>seek()</code>到文件中的新位置；</li>
+<li>在该位置<code>write()</code>一些数据；</li>
+<li>最后<code>close()</code>文件。</li>
+</ol>
+<p>文件描述符是这个过程的核心; 如果没有先<code>open()</code>来获取文件描述符，就无法读取或写入文件；下一次读或写的位置由最后一次<code>read()/write()/seek()</code>决定。 因此，<strong>POSIX I/O 是有状态的</strong>；读取和写入数据由一些持久状态控制，该状态由操作系统以文件描述符的形式维护。</p>
+<p>因为操作系统必须为每个想要读取或写入的进程跟踪其文件描述符的状态，当数百万或数十亿的进程试图在同一个文件系统上进行 I/O时，这种由 POSIX 提供的有状态的 I/O 模型就成为了一个主要的系统扩展瓶颈。多节点并发打开文件和单节点性能对比如下图所示：</p>
+<p><img src="/2019/05/12/bad-posix-io/performance-of-concurrent-file-op.png" style="zoom:60%"></p>
+<p>在大多数并行文件系统上，打开文件的成本与客户端数量呈线性关系。也就是说，在使用 POSIX 接口实际读取或写入数据之前，有状态的 POSIX IO 模型就会引发性能损失，而当系统规模扩张时，这种性能损失会变得越来越明显。</p>
+<h2 id="POSIX-I-O-元数据"><a href="#POSIX-I-O-元数据" class="headerlink" title="POSIX I/O 元数据"></a>POSIX I/O 元数据</h2><p>POSIX I/O 还规定了所有文件必须具有的特定元数据集。例如，POSIX I/O API <code>chmod()</code> 和 <code>stat()</code>，或者同名shell命令。这些调用操纵 POSIX 规定所有文件必须拥有的元数据，例如文件的所属用户和所属组，用户和组的文件访问权限，以及文件创建和最后修改时间等属性。</p>
+<p>虽然 POSIX 风格的元数据确实实用，但它<strong>非常死板且不灵活</strong>。例如，文件的所有权和访问权限在包含科学数据的目录（例如，每个进程的文件检查点）中通常是相同的，但 POSIX 要求文件系统必须独立地跟踪每个文件。同时，这种元数据设计对于许多（科学计算的）数据集描述不充分，通常导致需要在 README 中描述一些额外的元数据信息。</p>
+<p>在大规模系统中支持 POSIX 元数据模式是困难的：任何试图在一个包含百万级别文件的目录中进行<code>ls -l</code>列举的人都可以证明这一点。尽管如此，POSIX 元数据模式的不灵活性通常让用户使用其他管理方法，从编写每个目录中的README文件或精心命名的文件到复杂的元数据管理系统，如 <a href="http://www.nersc.gov/news-publications/nersc-news/nersc-center-news/2013/new-metadata-organizer-and-archive-streamlines-jgi-data-management/" target="_blank" rel="noopener">JAMO</a>，<a href="https://irods.org/" target="_blank" rel="noopener">iRODS</a>或者<a href="http://www.ga.com/nirvana" target="_blank" rel="noopener">Nirvana</a>。</p>
+<h2 id="POSIX-I-O-有强一致性"><a href="#POSIX-I-O-有强一致性" class="headerlink" title="POSIX I/O 有强一致性"></a>POSIX I/O 有强一致性</h2><p>前两节都在讲 POSIX IO API，也许标准 POSIX IO 对扩展性最大的限制不在于其 API，而在于其语义。思考<a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html" target="_blank" rel="noopener">POSIX 2008</a> 中对 <code>write()</code> 函数的特殊要求：</p>
+<blockquote>
+<p>当 <code>write()</code> 对一个常规文件写操作成功返回时：</p>
+<ul>
+<li>任何对该文件的成功读请求的字节位置都将被写操作修改，并返回写操作结束时的字节位置，直到其他操作修改了字节位置。</li>
+<li>对文件中相同字节位置的、任何后续成功的<code>write()</code>操作都将覆盖该文件数据。</li>
+</ul>
+</blockquote>
+<p>也就是说，写操作必须<strong>强一致性</strong>的：一个 <code>write()</code> 操作需要阻塞应用程序知道系统可以保证其他 <code>read()</code> 调用可以看到刚写入的数据。虽然在写入本地磁盘的单个工作站上完成此操作并不太繁重，但在分布式文件系统上保证这种强一致性非常具有挑战性。</p>
+<h2 id="保证-POSIX-一致性的代价"><a href="#保证-POSIX-一致性的代价" class="headerlink" title="保证 POSIX 一致性的代价"></a>保证 POSIX 一致性的代价</h2><p>所有现代操作系统都使用页缓存来减少保证 POSIX 一致性带来的延迟。页缓存使得操作系统不必将应用程序阻塞直到数据写入慢速、非易失性存储介质中，而是允许 <code>write()</code> 操作将数据写入页缓存中就返回，并将控制权交还给应用程序。操作系统追踪包含未下刷到磁盘数据的脏页，并将这些脏页从内存中异步写回到其目标文件中。 因为操作系统跟踪缓存页面，POSIX强一致性保证仍然满足。同时，如果<code>read()</code>调用读取的数据页在内存中已经存在，操作系统将直接返回内存数据。</p>
+<p>Unfortunately, page cache becomes much more difficult to manage on networked file systems because different client nodes who want to read and write to the same file will not share a common page cache.  For example, consider the following I/O pattern:</p>
+<p>不幸的是，页缓存在网络文件系统上变得更加难以管理。因为想要读取和写入同一文件的不同客户端节点不共享页缓存。 例如，请考虑以下 I/O 模式：</p>
+<ol>
+<li>A 节点对一个文件写入数据，但是只写入本机页缓存中，并未更新到服务器；</li>
+<li>B 节点在 A 的数据更新前读取了同一文件的数据；</li>
+<li>此时 B 并未获取到 A 对文件的更改；</li>
+<li>所以 B 调用 <code>read()</code> 获取的数据与 A 的数据不一致。</li>
+<li>违背了 POSIX 一致性。</li>
+</ol>
+<p>为了遵守 POSIX 的强一致性，并行或者网络文件系统必须确保在客户端脏页从页缓存刷新到后端存储服务器之前，没有节点能够读取数据。 这意味着并行文件系统必须要：</p>
+<ol>
+<li>不使用页缓存，这会增加小文件的 IO 延迟，因为应用程序会阻塞直到数据通过网络写入后端存储；</li>
+<li>违反(或者”放松”) POSIX 一致性：在为大多数合理 IO 负载提供一致性。例如，当不同节点修改同一文件非重叠部分。但是如果两个节点试图修改同一个文件的相同部分，则一致性无法保证。</li>
+<li>实现复杂的锁定机制，以确保一个节点修改的文件（或文件的一部分）其他节点无法读取。</li>
+</ol>
+<p>所有这些选择都是可行的，但它们有不同的权衡。 例如：</p>
+<ol>
+<li>Cray公司的DataWarp文件系统使用方法1来提供简单、无锁、强一致的 IO 语义。由于每个 <code>write()</code> 操作不论大小必须通过网络传输，因此其处理小事务时会提高整体延时。但 DataWarp 的存储后端使用NVMe的存储介质降低性能损失。</li>
+<li>NFS使用方法2并保证 <strong>close-to-open</strong> 一致性：文件中的数据仅在文件关闭后到文件打开之前保持一致。如果两个节点同时打开同一个文件，则它们可能会各自保留脏页，由客户端应用程序确定没有两个节点尝试修改同一页面。</li>
+<li>PVFS2（现为OrangeFS）使用方法1和2的组合：它不使用页面缓存，但它也不会序列化重叠写入来保证一致性。只要不同节点不尝试同时修改重叠字节范围，这就有利于确保一致性。这种一致性保证比NFS样式的一致性更强， NFS 只有在修改非重叠页面时才一致。</li>
+<li>Lustre 和 GPFS 这样的并行文件系统使用方法3实现复杂的分布式锁机制，以确保在允许另一个节点执行重叠 IO 之前总是刷新脏页。当应用程序使用分布式锁不恰当造成锁竞争时，锁机制会限制系统的可扩展性。</li>
+</ol>
+<p>为了说明这一点，考虑对文件系统以不同传输大小进行带宽测试，这些文件系统采用不同的方法获得 POSIX 一致性：</p>
+<p><img src="/2019/05/12/bad-posix-io/file-tf-size.png" style="zoom:60%"></p>
+<p>图中蓝色数据显示无锁无缓存的实现方法（对应于方法）受 IO 大小的影响。该实现无法从回写缓存中受益，因为异步回写可以合并小块写到大块 RPC 调用中。 类似地，实现分布式锁机制（方法4）在写入大小小于锁粒度时发生锁竞争，从而抵消了回写高速缓存带来的性能优势。 只有当违背或者放松 POSIX 一致性要求并且无锁、使用本地缓存时，系统性能在所有 IO 尺寸下能始终保持高水平。</p>
+<p>POSIX 一致性模型还使其他两个可伸缩性限制 (有状态性质和元数据模式) 性能表现更加糟糕。 </p>
+<p>例如，POSIX IO 的有状态性质与分布式锁相结合意味着并行文件系统通常必须跟踪每个文件的每个区域上的每个锁的状态。随着越来越多的计算节点打开文件并获得读或写锁，管理哪些客户端节点拥有哪些文件的哪些字节范围的锁对分布式文件系统是一种沉重的负担。</p>
+<p>同样，<code>mtime</code> 和 <code>atime</code> 等元数据在客户端读写时必须完全正确的更新来保证完整的一致性。 这实际上要求每次读取文件时，也必须写入文件最后访问时间(<code>atime</code>)。 可以想象，这对管理 POSIX 元数据的并行文件系统施加了很大的负担。</p>
+<h2 id="为-HPC-挣脱-POSIX-I-O-的限制"><a href="#为-HPC-挣脱-POSIX-I-O-的限制" class="headerlink" title="为 HPC 挣脱 POSIX I/O 的限制"></a>为 HPC 挣脱 POSIX I/O 的限制</h2><p>从整体上讲，POSIX I/O API 和语义对于具有串行处理器、工作负载的个人计算机系统非常有意义。但是，HPC 提出了高度并发的挑战（最大的文件系统必须直接服务20,000个客户端）并且通常是多租户（大型系统通常运行数十或数百个独立的工作任务）。然而在 HPC 中，很多情况下 POSIX I/O 的强一致性并不是绝对必要的。例如：</p>
+<ol>
+<li>在极端规模下，应用程序从不依赖文件系统来提供并行 I/O 的完全一致性。从以往的系统中可以观察出来，当发生锁竞争时系统性能都会非常差，应用程序需要确保没有两个进程同时尝试写入一个文件的相同部分。</li>
+<li>在多租户系统中，两个独立的作业同时写一个共享文件的情况非常罕见。因此，保证整个系统中所有数据的完全一致性通常是过度的。文件的一致性域通常可以缩小到实际操作文件的一小部分计算节点。处理其他不同文件的工作无需保证全局一致性，进而受到性能惩罚。</li>
+</ol>
+<p>POSIX I/O 的 API 和语义是阻止符合 POSIX 标准的文件系统有效扩展到未来超大规模超级计算系统的主要障碍。事实上，这些障碍并不是什么新鲜事。分布式系统中使用的文件系统充满了完全 POSIX 合规性的例外，以解决这些问题：</p>
+<ul>
+<li>Lustre 的 <a href="http://doc.lustre.org/lustre_manual.xhtml#dbdoclet.50438206_86244" target="_blank" rel="noopener">local flock option</a> 将一致性域减少到单个计算节点；</li>
+<li>每个文件系统都有一个 <code>noatime</code> 选项，以减轻维护 POSIX 元数据强一致性带来的负担；</li>
+<li>Cray 的 <a href="http://docs.cray.com/books/S-0005-5204/S-0005-5204.pdf" target="_blank" rel="noopener">Data Virtualization Service</a> 提供了一个可以放松并行打开操作状态选项。</li>
+</ul>
+<p>然而，HPC 业界正在证明 POSIX I/O 根本不是 HPC 所需要的。 当然，下一步是确定 POSIX I/O的哪些方面是必不可少的，方便的和不必要的，然后构建一组新的 I/O API，语义和存储系统，为未来的超大规模系统提供服务。</p>
+<h2 id="展望后-POSIX-I-O-时代"><a href="#展望后-POSIX-I-O-时代" class="headerlink" title="展望后 POSIX I/O 时代"></a>展望后 POSIX I/O 时代</h2><p>幸运的是，回答这些问题一直是业界研究和开发的重点。 业界在为 I/O 定义全新的API方面取得了很大进展，包括 S3 和 Swift，它们通过剥离大部分 POSIX 复杂的语义来获得可扩展性和吞吐量。 当然，这些简化的语义仍然适用于超大规模的WORM工作负载，但其简化设计也阻止它们成为HPC应用程序的可行替代方案。</p>
+<p>HPC 领域努力在高可扩展性和灵活语义之间寻找更好的折衷，而且一些高性能对象存储正在大力发展，着眼于HPC市场。 英特尔的 <a href="https://www.snia.org/sites/default/files/SDC15_presentations/dist_sys/EricBarton_DAOS_Architecture_Extreme_Scale.pdf" target="_blank" rel="noopener">Distributed Asynchronous Object Store (DAOS)</a> 已由 <a href="https://www.nextplatform.com/2015/04/20/future-supercomputers-grow-out-of-file-systems-into-daos/" target="_blank" rel="noopener"><em>The Next Platform</em></a> 详细介绍，并仍处于主动和开放式开发阶段。 最近，希捷与欧洲地平线2020计划合作开始开发<a href="http://www.pdsw.org/pdsw-discs16/wips/danilov-wip-pdsw-discs16.pdf" target="_blank" rel="noopener">Mero</a>，高性能的、异步 exascale 对象存储。 这两个系统都将POSIX API 及其语义都视为辅助功能，这些功能是在更丰富的API上实现的，这种 API 避免了异步和事务语义组合的强一致性。 通过提供较低级别的 I/O 接口，由应用程序自己在POSIX 简单性和极端并发性和可扩展性进行权衡。</p>
+<p>也就是说，即使是最成熟的高性能性能对象存储目前仍处于研发阶段。 因此，这些系统还没有形成标准 API 或语义上，虽然一些高价值的极端规模应用程序可能愿意重新编写应用程序代码以最有效地利用这种新的存储系统，但很难想象未来会出现大面积放弃POSIX I/O API 的现象。</p>
+<p>当然，POSIX I/O API和 POSIX I/O 语义并不是不可分割的。 未来的 I/O系统完全有可能提供 POSIX I/O API 的重要部分以实现应用程序的可移植性，但同时，显着改变底层语义以避开它所带来的可扩展性瓶颈。 <a href="https://www.nextplatform.com/2016/01/19/a-new-object-of-supercomputing-storage-interest/" target="_blank" rel="noopener">MarFS project, also previously detailed at <em>The Next Platform</em></a> 就是一个很好的例子，因为它在 S3 或类似 Swift 的 <code>put/get</code> 语义之上定义了 POSIX API。 虽然MarFS并未尝试解决性能问题，但它确实展示了一种有趣的方法，可以在不强制重写应用程序 I/O 例程的情况下超越POSIX。 </p>
+<blockquote>
+<p>同样的项目如 nfs ganesha over RGW</p>
+</blockquote>
+<p>因此，超大规模 I/O的未来并不黯淡。 有许多方法可以超越 POSIX I/O 的限制而无需重写应用程序，这是一个在行业和学术界都积极研究的领域。 硬件技术(包括存储级存储介质，如 <a href="https://www.nextplatform.com/2017/03/20/like-flash-3d-xpoint-enters-datacenter-cache/" target="_blank" rel="noopener">3D XPoint</a>) 和软件实现（如用户空间 I/O 框架，包括 <a href="http://www.spdk.io/" target="_blank" rel="noopener">SPDK</a> 和 <a href="https://mercury-hpc.github.io/" target="_blank" rel="noopener">Mercury</a>）的进步继续为并行 I/O性能的创新铺平了道路，并创造了巨大的机会。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/存储/" rel="tag"># 存储</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/05/acid-cap-base/" rel="next" title="谈谈 ACID、CAP 和 BASE">
+                <i class="fa fa-chevron-left"></i> 谈谈 ACID、CAP 和 BASE
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/myface.jpeg"
+                alt="Gu Lei" />
+            
+              <p class="site-author-name" itemprop="name">Gu Lei</p>
+              <p class="site-description motion-element" itemprop="description">这里是谷雷的实验室</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#理解今天的-POSIX-I-O"><span class="nav-number">1.</span> <span class="nav-text">理解今天的 POSIX I/O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POSIX-I-O-是有状态的"><span class="nav-number">2.</span> <span class="nav-text">POSIX I/O 是有状态的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POSIX-I-O-元数据"><span class="nav-number">3.</span> <span class="nav-text">POSIX I/O 元数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POSIX-I-O-有强一致性"><span class="nav-number">4.</span> <span class="nav-text">POSIX I/O 有强一致性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保证-POSIX-一致性的代价"><span class="nav-number">5.</span> <span class="nav-text">保证 POSIX 一致性的代价</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为-HPC-挣脱-POSIX-I-O-的限制"><span class="nav-number">6.</span> <span class="nav-text">为 HPC 挣脱 POSIX I/O 的限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#展望后-POSIX-I-O-时代"><span class="nav-number">7.</span> <span class="nav-text">展望后 POSIX I/O 时代</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gu Lei</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+
+  <span class="post-meta-divider">|</span>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">总访客<span id="busuanzi_value_site_uv"></span>人</span>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("KHYUiycr5l3mK71gpL9xJhp1-gzGzoHsz", "lzTTm112I4IxpGeHJVysDM6o");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
